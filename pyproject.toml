@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pydantic-plus"
-version = "1.0"
+version = "1.0.0"
 description = """\
 Pydantic BaseModel extended a bit:
   - PurePosixPath json encoding and validation
