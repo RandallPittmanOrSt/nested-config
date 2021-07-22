@@ -10,8 +10,8 @@ authors = ["Randall Pittman <randallpittman@outlook.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.8"
-toml = "^0.10.2"
 pydantic = "^1.8.1"
+rtoml = "^0.7.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"

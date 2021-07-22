@@ -9,7 +9,7 @@ Pydantic BaseModel extended a bit:
 from pathlib import Path, PurePosixPath
 from typing import Any, Type, TypeVar
 
-import toml
+import rtoml
 from pydantic import BaseModel as PydanticBaseModel
 from pydantic import PydanticTypeError
 from pydantic.validators import _VALIDATORS
@@ -47,7 +47,7 @@ class BaseModel(PydanticBaseModel):
         ValidationError
             The data in the TOML file does not match the model
         """
-        return cls.parse_obj(toml.load(toml_path))
+        return cls.parse_obj(rtoml.load(toml_path))
 
     @classmethod
     def from_tomls(cls: Type[PydModel], toml_str: str) -> PydModel:
@@ -65,7 +65,7 @@ class BaseModel(PydanticBaseModel):
         ValidationError
             The data in the TOML file does not match the model
         """
-        return cls.parse_obj(toml.loads(toml_str))
+        return cls.parse_obj(rtoml.loads(toml_str))
 
 
 # ## Add PurePosixPath validation to pydantic
