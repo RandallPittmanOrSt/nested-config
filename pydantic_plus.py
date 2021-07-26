@@ -16,7 +16,7 @@ from pydantic.validators import _VALIDATORS
 
 __all__ = ["PPPathError", "BaseModel"]
 
-version = "1.0"
+__version__ = "1.1.2"
 
 PydModel = TypeVar("PydModel", bound="BaseModel")
 
