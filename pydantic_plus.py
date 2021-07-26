@@ -14,11 +14,7 @@ from pydantic import BaseModel as PydanticBaseModel
 from pydantic import PydanticTypeError
 from pydantic.validators import _VALIDATORS
 
-
-__all__ = [
-    "PPPathError",
-    "BaseModel"
-]
+__all__ = ["PPPathError", "BaseModel"]
 
 version = "1.0"
 
@@ -47,6 +43,7 @@ class BaseModel(PydanticBaseModel):
         ValidationError
             The data in the TOML file does not match the model
         """
+        toml_path = Path(toml_path)  # ensure Path for rtoml, else assumed to be TOML string
         return cls.parse_obj(rtoml.load(toml_path))
 
     @classmethod
