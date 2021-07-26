@@ -2,9 +2,8 @@
 name = "pydantic-plus"
 version = "1.1.1.post0"
 description = """\
-Pydantic BaseModel extended a bit:
-  - PurePosixPath json encoding and validation
-  - from_toml and from_tomls classmethods
+Pydantic BaseModel extended with PurePosixPath json encoding & validation and from_toml and from_tomls\
+classmethods\
 """
 authors = ["Randall Pittman <randallpittman@outlook.com>"]
 
@@ -20,7 +19,7 @@ isort = "^5.8.0"
 black = "^21.4b2"
 
 [build-system]
-requires = ["poetry-core>=1.0.0", "tomli"]
+requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.black]
