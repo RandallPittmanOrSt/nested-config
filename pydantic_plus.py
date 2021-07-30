@@ -13,8 +13,9 @@ import rtoml
 from pydantic import BaseModel as PydanticBaseModel
 from pydantic import PydanticTypeError
 from pydantic.validators import _VALIDATORS
+from rtoml import TomlParsingError
 
-__all__ = ["PPPathError", "BaseModel"]
+__all__ = ["BaseModel", "PurePosixPathError", "TomlParsingError"]
 
 __version__ = "1.1.2"
 
@@ -66,7 +67,7 @@ class BaseModel(PydanticBaseModel):
 
 
 # ## Add PurePosixPath validation to pydantic
-class PPPathError(PydanticTypeError):
+class PurePosixPathError(PydanticTypeError):
     msg_template = "value is not a valid pure POSIX path"
 
 
@@ -77,7 +78,7 @@ def validate_pure_posix_path(v: Any) -> PurePosixPath:
     try:
         return PurePosixPath(v)
     except TypeError:
-        raise PPPathError()
+        raise PurePosixPathError()
 
 
 _VALIDATORS.append((PurePosixPath, [validate_pure_posix_path]))
