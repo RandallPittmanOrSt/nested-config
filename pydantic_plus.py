@@ -11,7 +11,6 @@ from typing import Any, Type, TypeVar
 
 import rtoml
 from pydantic import BaseModel as PydanticBaseModel
-from pydantic import PydanticTypeError
 from pydantic.validators import _VALIDATORS
 from rtoml import TomlParsingError
 
@@ -39,7 +38,7 @@ class BaseModel(PydanticBaseModel):
 
         Raises
         -------
-        TomlDecodeError
+        TomlParsingError
             TOML is not valid
         ValidationError
             The data in the TOML file does not match the model
@@ -58,7 +57,7 @@ class BaseModel(PydanticBaseModel):
 
         Raises
         -------
-        TomlDecodeError
+        TomlParsingError
             TOML is not valid
         ValidationError
             The data in the TOML file does not match the model
@@ -66,19 +65,9 @@ class BaseModel(PydanticBaseModel):
         return cls.parse_obj(rtoml.loads(toml_str))
 
 
-# ## Add PurePosixPath validation to pydantic
-class PurePosixPathError(PydanticTypeError):
-    msg_template = "value is not a valid pure POSIX path"
-
-
 def validate_pure_posix_path(v: Any) -> PurePosixPath:
     """Attempt to convert a value to a PurePosixPath"""
-    if isinstance(v, PurePosixPath):
-        return v
-    try:
-        return PurePosixPath(v)
-    except TypeError:
-        raise PurePosixPathError()
+    return PurePosixPath(v)
 
 
 _VALIDATORS.append((PurePosixPath, [validate_pure_posix_path]))
