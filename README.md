@@ -34,3 +34,17 @@ my_model  # MyModel(remote_server='rsync.example.com', remote_path=PurePosixPath
 my_model.json()  # '{"remote_server": "rsync.example.com", "remote_path": "shared/documents/report.xls"}'
 
 ```
+
+## Changelog
+
+### [Unreleased]
+
+### [1.1.3] - 2021-07-30
+
+- Add README
+- Simplify PurePosixPath validator
+- Export `TomlParsingError` from rtoml for downstream exception handling (without needing to explicitly
+  import rtoml).
+
+[Unreleased]: https://gitlab.com/osu-nrsg/pydantic-plus/-/compare/v1.1.3...master
+[1.1.3]: https://gitlab.com/osu-nrsg/pydantic-plus/-/tags/v1.1.3
