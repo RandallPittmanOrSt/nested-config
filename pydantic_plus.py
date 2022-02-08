@@ -7,18 +7,20 @@ Pydantic BaseModel extended a bit:
 """
 
 from pathlib import Path, PurePosixPath
-from typing import Any, Type, TypeVar
+from typing import Any, Type, TypeVar, Union
 
 import rtoml
 from pydantic import BaseModel as PydanticBaseModel
 from pydantic.validators import _VALIDATORS
 from rtoml import TomlParsingError
 
-__all__ = ["BaseModel", "PurePosixPathError", "TomlParsingError"]
+__all__ = ["BaseModel", "TomlParsingError"]
 
 __version__ = "1.1.3"
 
 PydModel = TypeVar("PydModel", bound="BaseModel")
+
+PathLike = Union[Path, str]
 
 
 class BaseModel(PydanticBaseModel):
@@ -28,7 +30,7 @@ class BaseModel(PydanticBaseModel):
         json_encoders = {PurePosixPath: lambda p: str(p)}
 
     @classmethod
-    def from_toml(cls: Type[PydModel], toml_path: Path) -> PydModel:
+    def from_toml(cls: Type[PydModel], toml_path: PathLike) -> PydModel:
         """Create pydantic model from a TOML file
 
         Parameters
