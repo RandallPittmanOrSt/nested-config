@@ -9,15 +9,15 @@ Pydantic BaseModel extended a bit:
 from pathlib import PurePosixPath, PureWindowsPath
 from typing import Any, Type
 
+import pydantic
 import rtoml
-from pydantic import BaseModel as PydanticBaseModel
 from pydantic.validators import _VALIDATORS
 
 from pydantic_plus import parsing
 from pydantic_plus._types import PathLike, PydModelT
 
 
-class BaseModel(PydanticBaseModel):
+class BaseModel(pydantic.BaseModel):
     """Extends pydantic.BaseModel with conversion from TOML and incluedes json encoding of PurePosixPath"""
 
     class Config:

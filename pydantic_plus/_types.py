@@ -1,9 +1,9 @@
 from pathlib import Path
 from typing import TypeVar, Union
 
-from pydantic import BaseModel as PydanticBaseModel
+import pydantic
 from typing_extensions import TypeAlias
 
 PathLike: TypeAlias = Union[Path, str]
 
-PydModelT = TypeVar("PydModelT", bound="PydanticBaseModel")
+PydModelT = TypeVar("PydModelT", bound=pydantic.BaseModel)
