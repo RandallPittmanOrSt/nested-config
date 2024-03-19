@@ -6,16 +6,15 @@ Pydantic BaseModel extended a bit:
 
 """
 
-from pathlib import Path, PurePosixPath, PureWindowsPath
-from typing import Any, Type, TypeVar, Union
+from pathlib import PurePosixPath, PureWindowsPath
+from typing import Any, Type
 
 import rtoml
 from pydantic import BaseModel as PydanticBaseModel
 from pydantic.validators import _VALIDATORS
 
-PydModel = TypeVar("PydModel", bound="BaseModel")
-
-PathLike = Union[Path, str]
+from pydantic_plus import parsing
+from pydantic_plus._types import PathLike, PydModelT
 
 
 class BaseModel(PydanticBaseModel):
@@ -25,7 +24,7 @@ class BaseModel(PydanticBaseModel):
         json_encoders = {PurePosixPath: str, PureWindowsPath: str}
 
     @classmethod
-    def from_toml(cls: Type[PydModel], toml_path: PathLike) -> PydModel:
+    def from_toml(cls: Type[PydModelT], toml_path: PathLike) -> PydModelT:
         """Create pydantic model from a TOML file
 
         Parameters
@@ -40,11 +39,10 @@ class BaseModel(PydanticBaseModel):
         ValidationError
             The data in the TOML file does not match the model
         """
-        toml_path = Path(toml_path)  # ensure Path for rtoml, else assumed to be TOML string
-        return cls.parse_obj(rtoml.load(toml_path))
+        return parsing.obj_from_toml(toml_path, cls)
 
     @classmethod
-    def from_tomls(cls: Type[PydModel], toml_str: str) -> PydModel:
+    def from_tomls(cls: Type[PydModelT], toml_str: str) -> PydModelT:
         """Create pydantic model from a TOML string
 
         Parameters
