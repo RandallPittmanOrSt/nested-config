@@ -14,13 +14,20 @@ def obj_from_toml(toml_path: PathLike, model: Type[PydModelT]) -> PydModelT:
     ----------
     toml_path
         Path to the TOML file
+    model
+        Pydantic model type (subclass of Pydantic BaseModel) to create from the parsed
+        TOML file.
+
+    Returns
+    -------
+    A 'model'-type object
 
     Raises
     -------
-    TomlParsingError
+    rtoml.TomlParsingError
         TOML is not valid
-    ValidationError
-        The data in the TOML file does not match the model
+    pydantic.ValidationError
+        The data fields or types in the TOML file do not match the model
     """
     # ensure Path, otherwise rtoml will assume it's a TOML string
     toml_path = Path(toml_path)
