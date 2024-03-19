@@ -1,4 +1,4 @@
-"""pydantic_plus.py
+"""base_model.py
 
 Pydantic BaseModel extended a bit:
   - PurePosixPath json encoding and validation
@@ -12,11 +12,6 @@ from typing import Any, Type, TypeVar, Union
 import rtoml
 from pydantic import BaseModel as PydanticBaseModel
 from pydantic.validators import _VALIDATORS
-from rtoml import TomlParsingError
-
-__all__ = ["BaseModel", "TomlParsingError"]
-
-__version__ = "1.1.3"
 
 PydModel = TypeVar("PydModel", bound="BaseModel")
 

@@ -520,6 +520,18 @@ testing = ["build[virtualenv]", "filelock (>=3.4.0)", "importlib-metadata", "ini
 testing-integration = ["build[virtualenv] (>=1.0.3)", "filelock (>=3.4.0)", "jaraco.envs (>=2.2)", "jaraco.path (>=3.2.0)", "packaging (>=23.2)", "pytest", "pytest-enabler", "pytest-xdist", "tomli", "virtualenv (>=13.0.0)", "wheel"]
 
 [[package]]
+name = "single-version"
+version = "1.6.0"
+description = "Small utility to define version string for Poetry-style Python project."
+category = "main"
+optional = false
+python-versions = ">=3.7,<4.0"
+files = [
+    {file = "single_version-1.6.0-py3-none-any.whl", hash = "sha256:67a2734e728b9554750e867b33591f3ad9509ccb851bb3047ced7bfe68429ecd"},
+    {file = "single_version-1.6.0.tar.gz", hash = "sha256:3b1fb6e9bd2c88268948d9191c78b63ddd3c07554c1f07cd8a85aedf2486e4fc"},
+]
+
+[[package]]
 name = "tomli"
 version = "1.2.3"
 description = "A lil' TOML parser"
@@ -574,4 +586,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8"
-content-hash = "8ba3381fba161fdb73805ddc022856cbca568f0c7ac8f7686b457e0a0dfc9670"
+content-hash = "6caae9c57738d981d90bc1a56c85e308b774675ddc4145fd360de2c9983b97d7"

@@ -11,6 +11,7 @@ authors = ["Randall Pittman <randallpittman@outlook.com>"]
 python = "^3.8"
 pydantic = "^1.10"
 rtoml = "^0.7.0"
+single-version = "^1.6.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
