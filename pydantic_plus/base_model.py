@@ -18,7 +18,7 @@ from pydantic_plus._types import PathLike, PydModelT
 
 
 class BaseModel(PydanticBaseModel):
-    """Extends pydantic BaseModel with conversion from TOML and incluedes json encoding of PurePosixPath"""
+    """Extends pydantic.BaseModel with conversion from TOML and incluedes json encoding of PurePosixPath"""
 
     class Config:
         json_encoders = {PurePosixPath: str, PureWindowsPath: str}
@@ -32,12 +32,16 @@ class BaseModel(PydanticBaseModel):
         toml_path
             Path to the TOML file
 
+        Returns
+        -------
+        An object of this class
+
         Raises
         -------
-        TomlParsingError
+        rtoml.TomlParsingError
             TOML is not valid
-        ValidationError
-            The data in the TOML file does not match the model
+        pydantic.ValidationError
+            The data fields or types in the TOML file do not match the model
         """
         return parsing.obj_from_toml(toml_path, cls)
 
