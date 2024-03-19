@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pydantic-plus"
-version = "1.1.4"
+version = "1.2.0a0"
 description = """\
 Pydantic BaseModel extended with PurePosixPath json encoding & validation and from_toml and from_tomls\
 classmethods\
@@ -9,7 +9,7 @@ authors = ["Randall Pittman <randallpittman@outlook.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.8"
-pydantic = "^1.8.1"
+pydantic = "^1.10"
 rtoml = "^0.7.0"
 
 [tool.poetry.dev-dependencies]

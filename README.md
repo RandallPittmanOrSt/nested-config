@@ -39,6 +39,8 @@ my_model.json()  # '{"remote_server": "rsync.example.com", "remote_path": "share
 
 ### [Unreleased]
 
+- Update to pydantic 1.10. Not changing to 2.0 yet.
+
 ### [1.1.3] - 2021-07-30
 
 - Add README
