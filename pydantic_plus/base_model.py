@@ -6,7 +6,7 @@ Pydantic BaseModel extended a bit:
 
 """
 
-from pathlib import Path, PurePosixPath
+from pathlib import Path, PurePosixPath, PureWindowsPath
 from typing import Any, Type, TypeVar, Union
 
 import rtoml
@@ -22,7 +22,7 @@ class BaseModel(PydanticBaseModel):
     """Extends pydantic BaseModel with conversion from TOML and incluedes json encoding of PurePosixPath"""
 
     class Config:
-        json_encoders = {PurePosixPath: lambda p: str(p)}
+        json_encoders = {PurePosixPath: str, PureWindowsPath: str}
 
     @classmethod
     def from_toml(cls: Type[PydModel], toml_path: PathLike) -> PydModel:
@@ -67,4 +67,11 @@ def validate_pure_posix_path(v: Any) -> PurePosixPath:
     return PurePosixPath(v)
 
 
-_VALIDATORS.append((PurePosixPath, [validate_pure_posix_path]))
+def validate_pure_windows_path(v: Any) -> PureWindowsPath:
+    """Attempt to convert a value to a PurePosixPath"""
+    return PureWindowsPath(v)
+
+
+_VALIDATORS.extend(
+    [(PurePosixPath, [validate_pure_posix_path]), (PureWindowsPath, [validate_pure_windows_path])]
+)
