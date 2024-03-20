@@ -8,8 +8,10 @@ from typing_extensions import TypeGuard
 
 from pydantic_plus._types import UNION_TYPES, PathLike, PydModelT
 
+
 class HasAnnotation(Protocol):
     """Protocol will allow some Pydantic 2.0 compatibility down the road"""
+
     annotation: Type[Any]
 
 
