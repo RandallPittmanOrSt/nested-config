@@ -32,8 +32,8 @@ def pure_windows_path_validator(v: Any):
 def patch_pydantic_validators():
     pydantic.validators._VALIDATORS.extend(
         [
-            (PurePath, [pure_path_validator]),
             (PurePosixPath, [pure_posix_path_validator]),
             (PureWindowsPath, [pure_windows_path_validator]),
+            (PurePath, [pure_path_validator]),  # last because others are more specific
         ]
     )
