@@ -11,8 +11,10 @@ HOUSE_TOML_PATH =  SCRIPTDIR / "house.toml"
 HOUSE_TOML_BAD_DIMPATH_PATH = SCRIPTDIR / "house_bad_dimpath.toml"
 HOUSE_TOML_LISTDIM_PATH = SCRIPTDIR / "house_listdim.toml"
 HOUSE_TOML_DICTDIM_PATH = SCRIPTDIR / "house_dictdim.toml"
+HOUSE_WITH_GARAGE_TOML_PATH =  SCRIPTDIR / "house_with_garage.toml"
 HOUSE_DIMENSIONS = {"length": 40, "width": 20, "height": 10}
 GARAGE_DIMENSIONS = {"length": 15, "width": 15, "height": 8}
+GARAGE_NAME = "way out back"
 
 class Dimensions(pydantic.BaseModel):
     length: int
@@ -39,6 +41,16 @@ class HouseDictDim(pydantic.BaseModel):
     dimensions: Dict[str, Dimensions]
 
 
+class Garage(pydantic.BaseModel):
+    name: str
+    dimensions: Dimensions
+
+class HouseWithGarage(pydantic.BaseModel):
+    name: str
+    dimensions: Dimensions
+    garage: Optional[Garage]
+
+
 def test_submodel_toml():
     house = pydantic_plus.obj_from_toml(HOUSE_TOML_PATH, House, convert_strpaths=True)
     assert house.dimensions == Dimensions(**HOUSE_DIMENSIONS)
@@ -60,6 +72,13 @@ def test_submodel_dict():
     assert house.dimensions["house"] == Dimensions(**HOUSE_DIMENSIONS)
     assert house.dimensions["garage"] == Dimensions(**GARAGE_DIMENSIONS)
 
+
+def test_subsubmodel():
+    house = pydantic_plus.obj_from_toml(HOUSE_WITH_GARAGE_TOML_PATH, HouseWithGarage, convert_strpaths=True)
+    assert house.dimensions == Dimensions(**HOUSE_DIMENSIONS)
+    assert house.garage
+    assert house.garage.name == GARAGE_NAME
+    assert house.garage.dimensions == Dimensions(**GARAGE_DIMENSIONS)
 
 def test_submodel_toml_badpath():
     with pytest.raises(FileNotFoundError):
