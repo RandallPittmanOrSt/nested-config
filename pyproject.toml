@@ -5,7 +5,7 @@ description = """\
 Pydantic BaseModel extended with PurePosixPath json encoding & validation and from_toml and from_tomls\
 classmethods\
 """
-authors = ["Randall Pittman <randallpittman@outlook.com>"]
+authors = ["Randall Pittman <pittmara@oregonstate.edu>"]
 
 [tool.poetry.dependencies]
 python = "^3.8"
