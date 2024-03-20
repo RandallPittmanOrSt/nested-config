@@ -157,4 +157,4 @@ def _toml_strfield_to_pydo(
     if not field_toml_path.is_absolute():
         # Assume it's relative to the current toml file
         field_toml_path = base_toml_path.parent / field_toml_path
-    return obj_from_toml(field_toml_path, field_model)
+    return obj_from_toml(field_toml_path, field_model, convert_strpaths=True)
