@@ -66,15 +66,15 @@ def obj_from_toml(
     toml_path = Path(toml_path)
     toml_obj = rtoml.load(toml_path)
     if convert_strpaths:
-        _preparse_toml_obj(toml_obj, model.__fields__, toml_path)
+        toml_obj = _preparse_toml_obj(toml_obj, model.__fields__, toml_path)
     return pydantic.parse_obj_as(model, toml_obj)
 
 
 def _preparse_toml_obj(
     tomlobj: Dict[str, Any], model_fields: Mapping[str, HasAnnotation], toml_path: Path
-) -> None:
+) -> Dict[str, Any]:
     """Convert a dict parsed from a TOML file according to the pydantic model_fields"""
-    tomlobj = {
+    return {
         k: _preparse_tomlval(v, model_fields[k].annotation, toml_path)
         for k, v in tomlobj.items()
     }
