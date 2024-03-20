@@ -40,6 +40,10 @@ my_model.json()  # '{"remote_server": "rsync.example.com", "remote_path": "share
 ### [Unreleased]
 
 - Update to pydantic 1.10. Not changing to 2.0 yet.
+- Add validators for `PurePath` and `PureWindowsPath`
+- Simplify JSON encoder specification to work for all `PurePaths`
+- Add ability to interpret a string value in a field that should be a sub-model as a path
+  to another TOML file to enable nested configurations.
 
 ### [1.1.3] - 2021-07-30
 

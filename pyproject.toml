@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pydantic-plus"
-version = "1.2.0a0"
+version = "1.2.0a1"
 description = """\
 Pydantic BaseModel extended with PurePosixPath json encoding & validation and from_toml and from_tomls\
 classmethods\
