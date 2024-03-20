@@ -6,10 +6,11 @@ Pydantic BaseModel extended a bit:
 
 """
 
-from pathlib import PurePosixPath, PureWindowsPath
+from pathlib import PurePath
 from typing import Any, Type
 
 import pydantic
+import pydantic.json
 import rtoml
 
 from pydantic_plus import parsing
@@ -21,7 +22,7 @@ class BaseModel(pydantic.BaseModel):
     PurePosixPath"""
 
     class Config:
-        json_encoders = {PurePosixPath: str, PureWindowsPath: str}
+        json_encoders = {PurePath: str}
 
     @classmethod
     def from_toml(
@@ -70,3 +71,7 @@ class BaseModel(pydantic.BaseModel):
             The data in the TOML file does not match the model
         """
         return cls.parse_obj(rtoml.loads(toml_str))
+
+
+def patch_pydantic_json_encoders():
+    pydantic.json.ENCODERS_BY_TYPE = {**pydantic.json.ENCODERS_BY_TYPE, PurePath: str}
