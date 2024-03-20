@@ -80,10 +80,10 @@ def _preparse_toml_obj(
     }
 
 
-def _preparse_tomlval(field_value: Any, modelfield_annoation, toml_path: Path) -> Any:
+def _preparse_tomlval(field_value: Any, modelfield_annotation, toml_path: Path) -> Any:
     if not isinstance(field_value, (str, list, dict)):
         return field_value
-    annotation = _normalize_optional_annotation(modelfield_annoation)
+    annotation = _normalize_optional_annotation(modelfield_annotation)
     if isinstance(field_value, str) and ispydmodel(annotation, pydantic.BaseModel):
         return _toml_strfield_to_pydo(field_value, annotation, toml_path)
     if (
