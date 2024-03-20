@@ -10,14 +10,14 @@ TOML_PATH = Path(__file__).parent / "simple_house.toml"
 
 class House(pydantic_plus.BaseModel):
     name: str
-    x: int
-    y: int
+    length: int
+    width: int
 
 
 class House2(pydantic.BaseModel):
     name: str
-    x: int
-    y: int
+    length: int
+    width: int
 
 HOUSE_DATA = {"name": "home", "length": 30, "width": 20}
 
