@@ -15,7 +15,9 @@ class HasAnnotation(Protocol):
     annotation: Type[Any]
 
 
-def ispydmodel(klass, cls: Type[pydantic.BaseModel]) -> TypeGuard[Type[pydantic.BaseModel]]:
+def ispydmodel(
+    klass, cls: Type[pydantic.BaseModel]
+) -> TypeGuard[Type[pydantic.BaseModel]]:
     """Exception-safe issubclass for pydantic BaseModel types"""
     try:
         return issubclass(klass, cls)
@@ -31,7 +33,9 @@ def ispydobj(obj, cls: Type[pydantic.BaseModel]) -> TypeGuard[pydantic.BaseModel
         return False
 
 
-def obj_from_toml(toml_path: PathLike, model: Type[PydModelT], convert_strpaths=False) -> PydModelT:
+def obj_from_toml(
+    toml_path: PathLike, model: Type[PydModelT], convert_strpaths=False
+) -> PydModelT:
     """Create a pydantic model object from a TOML file
 
     Parameters
@@ -70,7 +74,10 @@ def _preparse_toml_obj(
     tomlobj: Dict[str, Any], model_fields: Mapping[str, HasAnnotation], toml_path: Path
 ) -> None:
     """Convert a dict parsed from a TOML file according to the pydantic model_fields"""
-    tomlobj = {k: _preparse_tomlval(v, model_fields[k].annotation, toml_path) for k, v in tomlobj.items()}
+    tomlobj = {
+        k: _preparse_tomlval(v, model_fields[k].annotation, toml_path)
+        for k, v in tomlobj.items()
+    }
 
 
 def _preparse_tomlval(field_value: Any, modelfield_annoation, toml_path: Path) -> Any:
@@ -90,7 +97,10 @@ def _preparse_tomlval(field_value: Any, modelfield_annoation, toml_path: Path) -
         and all(isinstance(v, str) for v in field_value.values())
         and (kv_annotation := _dict_annotation(annotation))
     ):
-        return {k: _preparse_tomlval(v, kv_annotation, toml_path) for k, v in field_value.items()}
+        return {
+            k: _preparse_tomlval(v, kv_annotation, toml_path)
+            for k, v in field_value.items()
+        }
 
     # Default case
     return field_value
@@ -110,8 +120,8 @@ def _normalize_optional_annotation(annotation):
 
 
 def _list_model_annotation(annotation):
-    """If annotation is a List annotation, return the internal annotation if and only if it is a (maybe
-    optional) Pydantic model, otherwise return None."""
+    """If annotation is a List annotation, return the internal annotation if and only if
+    it is a (maybe optional) Pydantic model, otherwise return None."""
     annotation_origin = typing.get_origin(annotation)
     annotation_args = typing.get_args(annotation)
     if (
@@ -124,8 +134,8 @@ def _list_model_annotation(annotation):
 
 
 def _dict_annotation(annotation):
-    """If annotation is a Dict annotation with arguments, return the value annotation if and only if it is a
-    (maybe optional) Pydantic model, otherwise return None."""
+    """If annotation is a Dict annotation with arguments, return the value annotation if
+    and only if it is a (maybe optional) Pydantic model, otherwise return None."""
     annotation_origin = typing.get_origin(annotation)
     annotation_args = typing.get_args(annotation)
     if (

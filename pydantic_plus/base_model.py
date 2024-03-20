@@ -18,13 +18,16 @@ from pydantic_plus._types import PathLike, PydModelT
 
 
 class BaseModel(pydantic.BaseModel):
-    """Extends pydantic.BaseModel with conversion from TOML and incluedes json encoding of PurePosixPath"""
+    """Extends pydantic.BaseModel with conversion from TOML and incluedes json encoding of
+    PurePosixPath"""
 
     class Config:
         json_encoders = {PurePosixPath: str, PureWindowsPath: str}
 
     @classmethod
-    def from_toml(cls: Type[PydModelT], toml_path: PathLike, convert_strpaths=False) -> PydModelT:
+    def from_toml(
+        cls: Type[PydModelT], toml_path: PathLike, convert_strpaths=False
+    ) -> PydModelT:
         """Create Pydantic model from a TOML file
 
         Parameters
@@ -33,9 +36,10 @@ class BaseModel(pydantic.BaseModel):
             Path to the TOML file
         convert_strpaths
             If True, every string value [a] in the dict from the parsed TOML file that
-            corresponds to a Pydantic model field [b] in the base model will be interpreted as
-            a path to another TOML file and an attempt will be made to parse that TOML file
-            [a] and make it into an object of that [b] model type, and so on, recursively.
+            corresponds to a Pydantic model field [b] in the base model will be
+            interpreted as a path to another TOML file and an attempt will be made to
+            parse that TOML file [a] and make it into an object of that [b] model type,
+            and so on, recursively.
 
         Returns
         -------
@@ -80,5 +84,8 @@ def validate_pure_windows_path(v: Any) -> PureWindowsPath:
 
 
 _VALIDATORS.extend(
-    [(PurePosixPath, [validate_pure_posix_path]), (PureWindowsPath, [validate_pure_windows_path])]
+    [
+        (PurePosixPath, [validate_pure_posix_path]),
+        (PureWindowsPath, [validate_pure_windows_path]),
+    ]
 )
