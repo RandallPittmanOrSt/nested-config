@@ -7,10 +7,9 @@ Pydantic BaseModel extended a bit:
 """
 
 from pathlib import PurePath
-from typing import Any, Type
+from typing import Type
 
 import pydantic
-import pydantic.json
 import rtoml
 
 from pydantic_plus import parsing
@@ -71,7 +70,3 @@ class BaseModel(pydantic.BaseModel):
             The data in the TOML file does not match the model
         """
         return cls.parse_obj(rtoml.loads(toml_str))
-
-
-def patch_pydantic_json_encoders():
-    pydantic.json.ENCODERS_BY_TYPE = {**pydantic.json.ENCODERS_BY_TYPE, PurePath: str}
