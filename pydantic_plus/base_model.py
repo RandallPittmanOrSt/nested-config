@@ -11,7 +11,6 @@ from typing import Any, Type
 
 import pydantic
 import rtoml
-from pydantic.validators import _VALIDATORS
 
 from pydantic_plus import parsing
 from pydantic_plus._types import PathLike, PydModelT
@@ -71,21 +70,3 @@ class BaseModel(pydantic.BaseModel):
             The data in the TOML file does not match the model
         """
         return cls.parse_obj(rtoml.loads(toml_str))
-
-
-def validate_pure_posix_path(v: Any) -> PurePosixPath:
-    """Attempt to convert a value to a PurePosixPath"""
-    return PurePosixPath(v)
-
-
-def validate_pure_windows_path(v: Any) -> PureWindowsPath:
-    """Attempt to convert a value to a PurePosixPath"""
-    return PureWindowsPath(v)
-
-
-_VALIDATORS.extend(
-    [
-        (PurePosixPath, [validate_pure_posix_path]),
-        (PureWindowsPath, [validate_pure_windows_path]),
-    ]
-)
