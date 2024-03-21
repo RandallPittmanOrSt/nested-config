@@ -13,6 +13,7 @@ import pydantic
 import rtoml
 
 from pydantic_plus import parsing
+from pydantic_plus._compat import PYDANTIC_1, parse_obj
 from pydantic_plus._types import PathLike, PydModelT
 
 
@@ -20,8 +21,10 @@ class BaseModel(pydantic.BaseModel):
     """Extends pydantic.BaseModel with conversion from TOML and incluedes json encoding of
     PurePosixPath"""
 
-    class Config:
-        json_encoders = {PurePath: str}
+    if PYDANTIC_1:
+        # not needed in Pydantic 2
+        class Config:
+            json_encoders = {PurePath: str}
 
     @classmethod
     def from_toml(
@@ -69,4 +72,4 @@ class BaseModel(pydantic.BaseModel):
         ValidationError
             The data in the TOML file does not match the model
         """
-        return cls.parse_obj(rtoml.loads(toml_str))
+        return parse_obj(cls, rtoml.loads(toml_str))

@@ -35,6 +35,19 @@ my_model.json()  # '{"remote_server": "rsync.example.com", "remote_path": "share
 
 ```
 
+## Pydantic 1.0/2.0 Compatibility
+
+pydantic-plus is runtime compatible with Pydantic 1.10+ and Pydantic 2.0.
+
+For [mypy](https://www.mypy-lang.org/) type-checking to work with Pydantic 1.0, you must
+set `always_true = PYDANTIC_1` in your mypy
+[configuration](https://mypy.readthedocs.io/en/latest/config_file.html) or include
+`--always-true PYDANTIC_1` on the command line.
+
+For [Pyright](https://microsoft.github.io/pyright) (VS Code/Pylance) type-checking to work
+with Pydantic 1.0, you must set `defineConstant = { "PYDANTIC_1" = true }` in your
+[Pyright configuration](https://microsoft.github.io/pyright/#/configuration).
+
 ## Changelog
 
 ### [Unreleased]

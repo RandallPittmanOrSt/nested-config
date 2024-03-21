@@ -9,10 +9,10 @@ authors = ["Randall Pittman <pittmara@oregonstate.edu>"]
 
 [tool.poetry.dependencies]
 python = "^3.8"
-pydantic = "^1.10"
-rtoml = "^0.7.0"
+pydantic = ">=1.10,<3.0.0"
 single-version = "^1.6.0"
 typing-extensions = "^4.10.0"
+rtoml = "^0.10.0"
 
 [tool.poetry.group.dev.dependencies]
 ipython = "^7.22.0"
@@ -25,3 +25,10 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.ruff]
 line-length = 90
+
+[tool.mypy]
+# change to always_true for Pydantic <2.0
+always_false = "PYDANTIC_1"
+
+[tool.pyright]
+defineConstant = { "PYDANTIC_1" = false }  # change to true for Pydantic <2.0

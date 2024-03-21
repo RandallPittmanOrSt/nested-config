@@ -1,12 +1,14 @@
 """Test that we can just patch pydantic with pydantic_plus rather than using the
 pydantic_plus base model"""
 
+import json
 import os
 from pathlib import PurePath, PurePosixPath, PureWindowsPath
 
 import pydantic
 
 import pydantic_plus
+from pydantic_plus._compat import PYDANTIC_1, dump_json, parse_obj
 
 pydantic_plus.patch_pydantic_json_encoders()
 
@@ -29,7 +31,7 @@ class ModelWithPureWindowsPath(pydantic.BaseModel):
 
 def test_can_validate_pp():
     data = {"p": NATIVE_PURE_PATH}
-    m = ModelWithPurePath.parse_obj(data)
+    m = parse_obj(ModelWithPurePath, data)
     assert (
         m.p == PureWindowsPath(data["p"]) if os.name == "nt" else PurePosixPath(data["p"])
     )
@@ -37,34 +39,32 @@ def test_can_validate_pp():
 
 def test_can_validate_ppp():
     data = {"p": PURE_POSIX_PATH}
-    m = ModelWithPurePosixPath.parse_obj(data)
+    m = parse_obj(ModelWithPurePosixPath, data)
     assert m.p == PurePosixPath(data["p"])
 
 
 def test_can_validate_pwp():
     data = {"p": PURE_WINDOWS_PATH}
-    m = ModelWithPureWindowsPath.parse_obj(data)
+    m = parse_obj(ModelWithPureWindowsPath, data)
     assert m.p == PureWindowsPath(data["p"])
 
 
 def test_can_serialize_pp():
     p = PurePath(NATIVE_PURE_PATH)
     m = ModelWithPurePath(p=p)
-    json_model = m.json()
-    assert json_model == f'{{"p": "{p}"}}'
+    json_model = dump_json(m)
+    assert json.loads(json_model) == {"p": str(p)}
 
 
 def test_can_serialize_ppp():
     p = PurePosixPath(PURE_POSIX_PATH)
     m = ModelWithPurePosixPath(p=p)
-    json_model = m.json()
-    assert json_model == f'{{"p": "{p}"}}'
+    json_model = dump_json(m)
+    assert json.loads(json_model) == {"p": str(p)}
 
 
 def test_can_serialize_pw():
     p = PureWindowsPath(PURE_WINDOWS_PATH)
     m = ModelWithPureWindowsPath(p=p)
-    json_model = m.json()
-    # json replaces backslashes with double-backslashes
-    json_pwp = PURE_WINDOWS_PATH.replace("\\", "\\\\")
-    assert json_model == f'{{"p": "{json_pwp}"}}'
+    json_model = dump_json(m)
+    assert json.loads(json_model) == {"p": str(p)}
