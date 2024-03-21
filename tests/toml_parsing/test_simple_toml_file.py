@@ -3,6 +3,7 @@
 from pathlib import Path
 
 import pydantic
+
 import pydantic_plus
 
 TOML_PATH = Path(__file__).parent / "simple_house.toml"
@@ -19,7 +20,9 @@ class House2(pydantic.BaseModel):
     length: int
     width: int
 
+
 HOUSE_DATA = {"name": "home", "length": 30, "width": 20}
+
 
 def test_basic_point_file():
     """Test creating a Point with the from_toml method of pydantic_plus.BaseModel"""
