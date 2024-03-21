@@ -31,4 +31,4 @@ def test_basic_point_file():
 
 def test_basic_point_file2():
     """Test creating a Point2 with pydantic_plus.obj_from_toml"""
-    assert pydantic_plus.pydo_from_toml(TOML_PATH, House2) == House2(**HOUSE_DATA)
+    assert pydantic_plus.pydo_from_config(TOML_PATH, House2) == House2(**HOUSE_DATA)

@@ -13,7 +13,7 @@ import pydantic
 
 from pydantic_plus import parsing
 from pydantic_plus._compat import PYDANTIC_1, parse_obj
-from pydantic_plus._config import load_toml_text
+from pydantic_plus._config import load_config_text
 from pydantic_plus._types import PathLike, PydModelT
 
 
@@ -54,7 +54,7 @@ class BaseModel(pydantic.BaseModel):
         pydantic.ValidationError
             The data fields or types in the TOML file do not match the model
         """
-        return parsing.pydo_from_toml(toml_path, cls, convert_strpaths)
+        return parsing.pydo_from_config(toml_path, cls, convert_strpaths)
 
     @classmethod
     def from_tomls(cls: Type[PydModelT], toml_str: str) -> PydModelT:
@@ -72,4 +72,4 @@ class BaseModel(pydantic.BaseModel):
         ValidationError
             The data in the TOML file does not match the model
         """
-        return parse_obj(cls, load_toml_text(toml_str))
+        return parse_obj(cls, load_config_text(toml_str))
