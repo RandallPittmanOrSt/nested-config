@@ -6,7 +6,7 @@ import pydantic
 from typing_extensions import TypeGuard
 
 from pydantic_plus._compat import ModelFields, model_fields, parse_obj
-from pydantic_plus._toml import TomlObj, load_toml_file
+from pydantic_plus._config import TomlObj, load_toml_file
 from pydantic_plus._types import UNION_TYPES, PathLike, PydModelT
 
 

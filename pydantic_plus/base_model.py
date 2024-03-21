@@ -13,7 +13,7 @@ import pydantic
 
 from pydantic_plus import parsing
 from pydantic_plus._compat import PYDANTIC_1, parse_obj
-from pydantic_plus._toml import load_toml_text
+from pydantic_plus._config import load_toml_text
 from pydantic_plus._types import PathLike, PydModelT
 
 
