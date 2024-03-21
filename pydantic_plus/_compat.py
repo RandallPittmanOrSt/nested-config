@@ -16,10 +16,12 @@ class HasAnnotation(Protocol):
 
     annotation: Optional[Type[Any]]
 
+
 if PYDANTIC_1:
     ModelFields: TypeAlias = Dict[str, pydantic.fields.ModelField]
 else:
     ModelFields: TypeAlias = Dict[str, pydantic.fields.FieldInfo]
+
 
 def model_fields(model: Type[pydantic.BaseModel]) -> ModelFields:
     if PYDANTIC_1:
