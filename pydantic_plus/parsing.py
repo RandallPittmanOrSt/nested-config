@@ -28,7 +28,7 @@ def ispydobj(obj, cls: Type[pydantic.BaseModel]) -> TypeGuard[pydantic.BaseModel
         return False
 
 
-def obj_from_toml(
+def pydo_from_toml(
     toml_path: PathLike, model: Type[PydModelT], convert_strpaths=False
 ) -> PydModelT:
     """Create a pydantic model object from a TOML file
@@ -152,4 +152,4 @@ def _toml_strfield_to_pydo(
     if not field_toml_path.is_absolute():
         # Assume it's relative to the current toml file
         field_toml_path = base_toml_path.parent / field_toml_path
-    return obj_from_toml(field_toml_path, field_model, convert_strpaths=True)
+    return pydo_from_toml(field_toml_path, field_model, convert_strpaths=True)

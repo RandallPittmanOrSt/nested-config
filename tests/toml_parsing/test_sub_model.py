@@ -55,19 +55,19 @@ class HouseWithGarage(pydantic.BaseModel):
 
 
 def test_submodel_toml():
-    house = pydantic_plus.obj_from_toml(HOUSE_TOML_PATH, House, convert_strpaths=True)
+    house = pydantic_plus.pydo_from_toml(HOUSE_TOML_PATH, House, convert_strpaths=True)
     assert house.dimensions == Dimensions(**HOUSE_DIMENSIONS)
 
 
 def test_optional_submodel():
-    house = pydantic_plus.obj_from_toml(
+    house = pydantic_plus.pydo_from_toml(
         HOUSE_TOML_PATH, HouseMaybeDim, convert_strpaths=True
     )
     assert house.dimensions == Dimensions(**HOUSE_DIMENSIONS)
 
 
 def test_submodel_list():
-    house = pydantic_plus.obj_from_toml(
+    house = pydantic_plus.pydo_from_toml(
         HOUSE_TOML_LISTDIM_PATH, HouseListDim, convert_strpaths=True
     )
     assert house.dimensions[0] == Dimensions(**HOUSE_DIMENSIONS)
@@ -75,7 +75,7 @@ def test_submodel_list():
 
 
 def test_submodel_dict():
-    house = pydantic_plus.obj_from_toml(
+    house = pydantic_plus.pydo_from_toml(
         HOUSE_TOML_DICTDIM_PATH, HouseDictDim, convert_strpaths=True
     )
     assert house.dimensions["house"] == Dimensions(**HOUSE_DIMENSIONS)
@@ -83,7 +83,7 @@ def test_submodel_dict():
 
 
 def test_subsubmodel():
-    house = pydantic_plus.obj_from_toml(
+    house = pydantic_plus.pydo_from_toml(
         HOUSE_WITH_GARAGE_TOML_PATH, HouseWithGarage, convert_strpaths=True
     )
     assert house.dimensions == Dimensions(**HOUSE_DIMENSIONS)
@@ -94,6 +94,6 @@ def test_subsubmodel():
 
 def test_submodel_toml_badpath():
     with pytest.raises(FileNotFoundError):
-        pydantic_plus.obj_from_toml(
+        pydantic_plus.pydo_from_toml(
             HOUSE_TOML_BAD_DIMPATH_PATH, House, convert_strpaths=True
         )
