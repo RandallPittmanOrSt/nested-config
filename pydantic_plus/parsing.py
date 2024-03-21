@@ -10,14 +10,9 @@ from pydantic_plus._compat import ModelFields, model_fields, parse_obj
 from pydantic_plus._types import UNION_TYPES, PathLike, PydModelT
 
 
-def ispydmodel(
-    klass, cls: Type[pydantic.BaseModel]
-) -> TypeGuard[Type[pydantic.BaseModel]]:
+def ispydmodel(klass, cls: Type[PydModelT]) -> TypeGuard[Type[PydModelT]]:
     """Exception-safe issubclass for pydantic BaseModel types"""
-    try:
-        return issubclass(klass, cls)
-    except:  # NOSONAR
-        return False
+    return isinstance(klass, type) and issubclass(klass, cls)
 
 
 def pydo_from_toml(
