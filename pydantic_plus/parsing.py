@@ -20,14 +20,6 @@ def ispydmodel(
         return False
 
 
-def ispydobj(obj, cls: Type[pydantic.BaseModel]) -> TypeGuard[pydantic.BaseModel]:
-    """Exception-safe isinstance for pydantic BaseModel types"""
-    try:
-        return isinstance(obj, cls)
-    except:  # NOSONAR
-        return False
-
-
 def pydo_from_toml(
     toml_path: PathLike, model: Type[PydModelT], convert_strpaths=False
 ) -> PydModelT:
