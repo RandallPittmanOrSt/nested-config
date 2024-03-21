@@ -1,12 +1,12 @@
 import typing
 from pathlib import Path
-from typing import Any, Dict, Mapping, Type
+from typing import Any, Dict, Type
 
 import pydantic
 import rtoml
 from typing_extensions import TypeGuard
 
-from pydantic_plus._compat import model_fields, parse_obj, ModelFields
+from pydantic_plus._compat import ModelFields, model_fields, parse_obj
 from pydantic_plus._types import UNION_TYPES, PathLike, PydModelT
 
 

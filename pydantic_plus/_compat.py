@@ -1,10 +1,9 @@
 from typing import Any, Dict, Optional, Protocol, Type
 
-from typing_extensions import TypeAlias
-
 import pydantic
 import pydantic.fields
 from setuptools._vendor.packaging.version import Version
+from typing_extensions import TypeAlias
 
 from pydantic_plus._types import PydModelT
 
