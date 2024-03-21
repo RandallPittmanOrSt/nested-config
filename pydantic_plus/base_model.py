@@ -10,10 +10,10 @@ from pathlib import PurePath
 from typing import Type
 
 import pydantic
-import rtoml
 
 from pydantic_plus import parsing
 from pydantic_plus._compat import PYDANTIC_1, parse_obj
+from pydantic_plus._toml import load_toml_text
 from pydantic_plus._types import PathLike, PydModelT
 
 
@@ -72,4 +72,4 @@ class BaseModel(pydantic.BaseModel):
         ValidationError
             The data in the TOML file does not match the model
         """
-        return parse_obj(cls, rtoml.loads(toml_str))
+        return parse_obj(cls, load_toml_text(toml_str))

@@ -1,12 +1,12 @@
 import typing
 from pathlib import Path
-from typing import Any, Dict, Type
+from typing import Any, Type
 
 import pydantic
-import rtoml
 from typing_extensions import TypeGuard
 
 from pydantic_plus._compat import ModelFields, model_fields, parse_obj
+from pydantic_plus._toml import TomlObj, load_toml_file
 from pydantic_plus._types import UNION_TYPES, PathLike, PydModelT
 
 
@@ -46,15 +46,15 @@ def pydo_from_toml(
     """
     # ensure Path, otherwise rtoml will assume it's a TOML string
     toml_path = Path(toml_path)
-    toml_obj = rtoml.load(toml_path)
+    toml_obj = load_toml_file(toml_path)
     if convert_strpaths:
         toml_obj = _preparse_toml_obj(toml_obj, model_fields(model), toml_path)
     return parse_obj(model, toml_obj)
 
 
 def _preparse_toml_obj(
-    tomlobj: Dict[str, Any], model_fields: ModelFields, toml_path: Path
-) -> Dict[str, Any]:
+    tomlobj: TomlObj, model_fields: ModelFields, toml_path: Path
+) -> TomlObj:
     """Convert a dict parsed from a TOML file according to the pydantic model_fields"""
     return {
         k: _preparse_tomlval(v, model_fields[k].annotation, toml_path)
