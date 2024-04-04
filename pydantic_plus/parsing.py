@@ -1,3 +1,6 @@
+"""parsing.py - Functions to parse config files (e.g. TOML) into Pydantic model instances,
+possibly with nested models specified by string paths."""
+
 import typing
 from pathlib import Path
 from typing import Any, Type

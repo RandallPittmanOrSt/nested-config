@@ -1,3 +1,5 @@
+"""json.py - For PYDANTIC_1, adds a json encoder for PurePath objects"""
+
 from pathlib import PurePath
 
 import pydantic.json

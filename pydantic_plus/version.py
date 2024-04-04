@@ -1,3 +1,6 @@
+"""version.py - Get __version__ from Poetry-generated pyproject.toml or installed
+package version"""
+
 from pathlib import Path
 
 import single_version  # type: ignore

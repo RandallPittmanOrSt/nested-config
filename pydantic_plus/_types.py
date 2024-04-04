@@ -1,3 +1,5 @@
+"""_types.py - Type aliases and type-checking functions"""
+
 import sys
 from pathlib import Path
 from typing import TypeVar, Union

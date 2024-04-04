@@ -1,3 +1,6 @@
+"""_validators.py - For Pydantic 1.0, extends the built-in validators to include PurePath
+& variants"""
+
 from pathlib import PurePath, PurePosixPath, PureWindowsPath
 from typing import Any, Type, TypeVar
 

@@ -3,7 +3,6 @@
 Pydantic BaseModel extended a bit:
   - PurePosixPath json encoding and validation
   - from_toml and from_tomls classmethods
-
 """
 
 from pathlib import PurePath
