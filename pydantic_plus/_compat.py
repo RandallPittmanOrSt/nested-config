@@ -24,7 +24,7 @@ else:
     ModelFields: TypeAlias = Dict[str, pydantic.fields.FieldInfo]
 
 
-def model_fields(model: Type[pydantic.BaseModel]) -> ModelFields:
+def get_model_fields(model: Type[pydantic.BaseModel]) -> ModelFields:
     if PYDANTIC_1:
         return model.__fields__
     else:

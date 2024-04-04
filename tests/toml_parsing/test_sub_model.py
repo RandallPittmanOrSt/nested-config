@@ -1,10 +1,12 @@
+from functools import partial
 from pathlib import Path
 from typing import Dict, List, Optional
 
 import pydantic
 import pytest
+import rtoml
 
-import pydantic_plus
+from pydantic_plus import pyd_obj_from_config
 
 SCRIPTDIR = Path(__file__).parent
 HOUSE_TOML_PATH = SCRIPTDIR / "house.toml"
@@ -54,38 +56,33 @@ class HouseWithGarage(pydantic.BaseModel):
     garage: Optional[Garage]
 
 
+pyd_obj_from_toml = partial(pyd_obj_from_config, loader=rtoml.load)
+
+
 def test_submodel_toml():
-    house = pydantic_plus.pydo_from_config(HOUSE_TOML_PATH, House, convert_strpaths=True)
+    house = pyd_obj_from_toml(HOUSE_TOML_PATH, House)
     assert house.dimensions == Dimensions(**HOUSE_DIMENSIONS)
 
 
 def test_optional_submodel():
-    house = pydantic_plus.pydo_from_config(
-        HOUSE_TOML_PATH, HouseMaybeDim, convert_strpaths=True
-    )
+    house = pyd_obj_from_toml(HOUSE_TOML_PATH, HouseMaybeDim)
     assert house.dimensions == Dimensions(**HOUSE_DIMENSIONS)
 
 
 def test_submodel_list():
-    house = pydantic_plus.pydo_from_config(
-        HOUSE_TOML_LISTDIM_PATH, HouseListDim, convert_strpaths=True
-    )
+    house = pyd_obj_from_toml(HOUSE_TOML_LISTDIM_PATH, HouseListDim)
     assert house.dimensions[0] == Dimensions(**HOUSE_DIMENSIONS)
     assert house.dimensions[1] == Dimensions(**GARAGE_DIMENSIONS)
 
 
 def test_submodel_dict():
-    house = pydantic_plus.pydo_from_config(
-        HOUSE_TOML_DICTDIM_PATH, HouseDictDim, convert_strpaths=True
-    )
+    house = pyd_obj_from_toml(HOUSE_TOML_DICTDIM_PATH, HouseDictDim)
     assert house.dimensions["house"] == Dimensions(**HOUSE_DIMENSIONS)
     assert house.dimensions["garage"] == Dimensions(**GARAGE_DIMENSIONS)
 
 
 def test_subsubmodel():
-    house = pydantic_plus.pydo_from_config(
-        HOUSE_WITH_GARAGE_TOML_PATH, HouseWithGarage, convert_strpaths=True
-    )
+    house = pyd_obj_from_toml(HOUSE_WITH_GARAGE_TOML_PATH, HouseWithGarage)
     assert house.dimensions == Dimensions(**HOUSE_DIMENSIONS)
     assert house.garage
     assert house.garage.name == GARAGE_NAME
@@ -94,6 +91,4 @@ def test_subsubmodel():
 
 def test_submodel_toml_badpath():
     with pytest.raises(FileNotFoundError):
-        pydantic_plus.pydo_from_config(
-            HOUSE_TOML_BAD_DIMPATH_PATH, House, convert_strpaths=True
-        )
+        pyd_obj_from_toml(HOUSE_TOML_BAD_DIMPATH_PATH, House)

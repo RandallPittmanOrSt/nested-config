@@ -5,7 +5,7 @@ Pydantic BaseModel extended a bit:
   - from_toml and from_tomls classmethods
 """
 
-from pathlib import PurePath
+from pathlib import Path, PurePath
 from typing import Type
 
 import pydantic
@@ -53,7 +53,11 @@ class BaseModel(pydantic.BaseModel):
         pydantic.ValidationError
             The data fields or types in the TOML file do not match the model
         """
-            return parsing.pyd_obj_from_config(toml_path, cls, convert_strpaths)
+        if convert_strpaths:
+            return parsing.pyd_obj_from_config(toml_path, cls, loader=rtoml.load)
+        else:
+            config_dict = rtoml.load(Path(toml_path))
+            return parse_obj(cls, config_dict)
 
     @classmethod
     def from_tomls(cls: Type[PydModelT], toml_str: str) -> PydModelT:
