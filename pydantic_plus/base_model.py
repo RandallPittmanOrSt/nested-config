@@ -6,14 +6,23 @@ Pydantic BaseModel extended a bit:
 """
 
 from pathlib import Path, PurePath
+import sys
 from typing import Type
 
 import pydantic
-import rtoml
+if sys.version_info < (3, 11):
+    from tomli import load as toml_load_fobj
+else:
+    from tomllib import load as toml_load_fobj
 
 from pydantic_plus import parsing
 from pydantic_plus._compat import PYDANTIC_1, parse_obj
-from pydantic_plus._types import PathLike, PydModelT
+from pydantic_plus._types import ConfigDict, PathLike, PydModelT
+
+
+def _toml_load(path: PathLike) -> ConfigDict:
+    with open(path, "rb") as fobj:
+        return toml_load_fobj(fobj)
 
 
 class BaseModel(pydantic.BaseModel):
@@ -54,9 +63,9 @@ class BaseModel(pydantic.BaseModel):
             The data fields or types in the TOML file do not match the model
         """
         if convert_strpaths:
-            return parsing.pyd_obj_from_config(toml_path, cls, loader=rtoml.load)
+            return parsing.pyd_obj_from_config(toml_path, cls, loader=_toml_load)
         else:
-            config_dict = rtoml.load(Path(toml_path))
+            config_dict = _toml_load(Path(toml_path))
             return parse_obj(cls, config_dict)
 
     @classmethod
@@ -75,4 +84,4 @@ class BaseModel(pydantic.BaseModel):
         ValidationError
             The data in the TOML file does not match the model
         """
-        return parse_obj(cls, rtoml.loads(toml_str))
+        return parse_obj(cls, _toml_load(toml_str))

@@ -3,9 +3,9 @@
 from pathlib import Path
 
 import pydantic
-import rtoml
 
 import pydantic_plus
+from pydantic_plus.base_model import _toml_load
 
 TOML_PATH = Path(__file__).parent / "simple_house.toml"
 
@@ -33,5 +33,5 @@ def test_basic_point_file():
 def test_basic_point_file2():
     """Test creating a Point2 with pydantic_plus.obj_from_toml"""
     assert pydantic_plus.pyd_obj_from_config(
-        TOML_PATH, House2, loader=rtoml.load
+        TOML_PATH, House2, loader=_toml_load
     ) == House2(**HOUSE_DATA)

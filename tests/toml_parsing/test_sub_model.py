@@ -4,9 +4,10 @@ from typing import Dict, List, Optional
 
 import pydantic
 import pytest
-import rtoml
+
 
 from pydantic_plus import pyd_obj_from_config
+from pydantic_plus.base_model import _toml_load
 
 SCRIPTDIR = Path(__file__).parent
 HOUSE_TOML_PATH = SCRIPTDIR / "house.toml"
@@ -56,7 +57,7 @@ class HouseWithGarage(pydantic.BaseModel):
     garage: Optional[Garage]
 
 
-pyd_obj_from_toml = partial(pyd_obj_from_config, loader=rtoml.load)
+pyd_obj_from_toml = partial(pyd_obj_from_config, loader=_toml_load)
 
 
 def test_submodel_toml():
