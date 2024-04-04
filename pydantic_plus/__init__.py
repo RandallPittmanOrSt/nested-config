@@ -3,7 +3,7 @@ from pydantic_plus._validators import (
 )
 from pydantic_plus.base_model import BaseModel
 from pydantic_plus.json import patch_pydantic_json_encoders
-from pydantic_plus.parsing import ispydmodel, pydo_from_config
+from pydantic_plus.parsing import ispydmodel, pyd_obj_from_config
 from pydantic_plus.version import __version__
 
 # We always patch the validators, but in the future this may be made optional

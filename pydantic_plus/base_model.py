@@ -54,7 +54,7 @@ class BaseModel(pydantic.BaseModel):
         pydantic.ValidationError
             The data fields or types in the TOML file do not match the model
         """
-        return parsing.pydo_from_config(toml_path, cls, convert_strpaths)
+            return parsing.pyd_obj_from_config(toml_path, cls, convert_strpaths)
 
     @classmethod
     def from_tomls(cls: Type[PydModelT], toml_str: str) -> PydModelT:

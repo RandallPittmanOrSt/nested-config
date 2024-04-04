@@ -15,8 +15,7 @@ def ispydmodel(klass, cls: Type[PydModelT]) -> TypeGuard[Type[PydModelT]]:
     return isinstance(klass, type) and issubclass(klass, cls)
 
 
-def pydo_from_config(
-    config_path: PathLike, model: Type[PydModelT], convert_strpaths=False
+def pyd_obj_from_config(
 ) -> PydModelT:
     """Create a pydantic model object from a TOML file
 
