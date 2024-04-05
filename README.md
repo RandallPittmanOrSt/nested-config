@@ -95,7 +95,7 @@ It also supports validating and JSON-encoding `pathlib.PurePath` on Pydantic 1.8
    house  # House(name='my house', dimensions=Dimensions(length=12.6, width=25.3))
    ```
 
-An bonus feature of **nested-config** is that it provides for validation and JSON encoding
+A bonus feature of **nested-config** is that it provides for validation and JSON encoding
 of `pathlib.PurePath` and its subclasses in Pydantic <2.0 (this is built into Pydantic
 2.0+). All that is needed is an import of `nested_config`. Example:
 
