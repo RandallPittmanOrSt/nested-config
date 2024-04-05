@@ -14,9 +14,12 @@ from nested_config._validators import (
     patch_pydantic_validators as _patch_pydantic_validators,
 )
 from nested_config.base_model import BaseModel
-from nested_config.json import patch_pydantic_json_encoders
+from nested_config.json import (
+    patch_pydantic_json_encoders as _patch_pydantic_json_encoders,
+)
 from nested_config.parsing import ispydmodel, pyd_obj_from_config
 from nested_config.version import __version__
 
 # We always patch the validators, but in the future this may be made optional
 _patch_pydantic_validators()
+_patch_pydantic_json_encoders()

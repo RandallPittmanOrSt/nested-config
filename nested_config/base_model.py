@@ -6,7 +6,7 @@ Pydantic BaseModel extended a bit:
 """
 
 import sys
-from pathlib import Path, PurePath
+from pathlib import Path
 from typing import Type
 
 import pydantic
@@ -17,7 +17,7 @@ else:
     from tomllib import load as toml_load_fobj
 
 from nested_config import parsing
-from nested_config._compat import PYDANTIC_1, parse_obj
+from nested_config._compat import parse_obj
 from nested_config._types import ConfigDict, PathLike, PydModelT
 
 
@@ -29,11 +29,6 @@ def _toml_load(path: PathLike) -> ConfigDict:
 class BaseModel(pydantic.BaseModel):
     """Extends pydantic.BaseModel with conversion from TOML and incluedes json encoding of
     PurePosixPath"""
-
-    if PYDANTIC_1:
-        # not needed in Pydantic 2
-        class Config:
-            json_encoders = {PurePath: str}
 
     @classmethod
     def from_toml(
