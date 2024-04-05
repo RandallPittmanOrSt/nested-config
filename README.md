@@ -118,6 +118,8 @@ dest.json()  # '{"remote_server":"rsync.example.com","remote_path":"/data/incomi
 
 ```
 
+See [tests](tests) for more detailed use-cases.
+
 ## Pydantic 1.0/2.0 Compatibility
 
 nested-config is runtime compatible with Pydantic 1.8+ and Pydantic 2.0.
@@ -133,23 +135,3 @@ on the version of Pydantic you are using.
 
 [1]: https://mypy.readthedocs.io/en/latest/config_file.html
 [2]: https://microsoft.github.io/pyright/#/configuration
-
-## Changelog
-
-### [Unreleased]
-
-- ...much more to add here...
-- Add validators for `PurePath` and `PureWindowsPath`
-- Simplify JSON encoder specification to work for all `PurePaths`
-- Add ability to interpret a string value in a field that should be a sub-model as a path
-  to another TOML file to enable nested configurations.
-
-### [1.1.3] - 2021-07-30
-
-- Add README
-- Simplify PurePosixPath validator
-- Export `TomlParsingError` from rtoml for downstream exception handling (without needing to explicitly
-  import rtoml).
-
-[Unreleased]: https://gitlab.com/osu-nrsg/nested-config/-/compare/v1.1.3...master
-[1.1.3]: https://gitlab.com/osu-nrsg/nested-config/-/tags/v1.1.3
