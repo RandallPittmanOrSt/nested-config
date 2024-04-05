@@ -13,8 +13,8 @@ It also supports validating and JSON-encoding `pathlib.PurePath` on Pydantic 1.8
    models and the config file has string values for those fields, those values are
    interpreted as paths to other config files and those are recursively read into their
    respective Pydantic models using `pyd_obj_from_config()`. The `loader` kwarg allows the
-   use of any config file loader such as `load_toml` in the below example, or an
-   equivalent function for e.g. YAML or JSON.
+   use of any config file loader such as `load_yaml` in the below example, or an
+   equivalent function for e.g. TOML or JSON.
 
    Example:
 
