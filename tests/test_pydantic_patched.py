@@ -8,7 +8,7 @@ from pathlib import PurePath, PurePosixPath, PureWindowsPath
 import pydantic
 
 import nested_config
-from nested_config._compat import PYDANTIC_1, dump_json, parse_obj
+from nested_config._compat import dump_json, parse_obj
 
 nested_config.patch_pydantic_json_encoders()
 

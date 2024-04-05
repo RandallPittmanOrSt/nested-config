@@ -10,6 +10,7 @@ import sys
 from typing import Type
 
 import pydantic
+
 if sys.version_info < (3, 11):
     from tomli import load as toml_load_fobj
 else:

@@ -11,6 +11,7 @@ from nested_config._types import PydModelT
 
 PYDANTIC_1 = Version(pydantic.VERSION) < Version("2.0")
 
+
 class HasAnnotation(Protocol):
     """Protocol will allow some Pydantic 2.0 compatibility down the road"""
 
