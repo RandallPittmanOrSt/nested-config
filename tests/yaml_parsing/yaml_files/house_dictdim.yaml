@@ -1,0 +1,4 @@
+name: Century Oaks
+dimensions:
+  house: subdir/house_dimensions.yaml
+  garage: subdir/garage_dimensions.yaml
