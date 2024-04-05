@@ -63,25 +63,25 @@ mypy_38_pyd18:
     image: python:3.8
     script:
         - pip install pydantic==1.8
-        - poetry run mypy --always_true PYDANTIC_1
+        - poetry run mypy --always-true PYDANTIC_1
 
 mypy_312_pyd18:
     stage: lint
     image: python:3.12
     script:
         - pip install pydantic==1.8
-        - poetry run mypy --always_true PYDANTIC_1
+        - poetry run mypy --always-true PYDANTIC_1
 
 mypy_312_pyd110:
     stage: lint
     image: python:3.12
     script:
         - pip install pydantic==1.10
-        - poetry run mypy --always_true PYDANTIC_1
+        - poetry run mypy --always-true PYDANTIC_1
 
 mypy_312_pyd2_latest:
     stage: lint
     image: python:3.12
     script:
         - pip install -U 'pydantic>=2.0,<3.0'
-        - poetry run mypy --always_false PYDANTIC_1
+        - poetry run mypy --always-false PYDANTIC_1
