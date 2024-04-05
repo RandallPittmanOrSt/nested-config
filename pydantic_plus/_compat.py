@@ -10,7 +10,6 @@ from typing_extensions import TypeAlias
 from pydantic_plus._types import PydModelT
 
 PYDANTIC_1 = Version(pydantic.VERSION) < Version("2.0")
-PYDANTIC_110 = PYDANTIC_1 and Version(pydantic.VERSION) >= Version("1.10")
 
 class HasAnnotation(Protocol):
     """Protocol will allow some Pydantic 2.0 compatibility down the road"""
@@ -25,7 +24,8 @@ else:
 
 
 def get_field_annotation(model: Type[pydantic.BaseModel], field_name: str):
-    if PYDANTIC_1 and not PYDANTIC_110:
+    if PYDANTIC_1:
+        # "annotation" exists in pydantic 1.10, but not 1.8 or 1.9
         return get_model_fields(model)[field_name].outer_type_
     else:
         return get_model_fields(model)[field_name].annotation

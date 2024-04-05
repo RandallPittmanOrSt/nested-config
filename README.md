@@ -37,22 +37,24 @@ my_model.json()  # '{"remote_server": "rsync.example.com", "remote_path": "share
 
 ## Pydantic 1.0/2.0 Compatibility
 
-pydantic-plus is runtime compatible with Pydantic 1.10+ and Pydantic 2.0.
+pydantic-plus is runtime compatible with Pydantic 1.8+ and Pydantic 2.0.
 
-For [mypy](https://www.mypy-lang.org/) type-checking to work with Pydantic 1.0, you must
-set `always_true = PYDANTIC_1` in your mypy
-[configuration](https://mypy.readthedocs.io/en/latest/config_file.html) or include
-`--always-true PYDANTIC_1` on the command line.
+The follow table gives info on how to configure the [mypy](https://www.mypy-lang.org/) and
+[Pyright](https://microsoft.github.io/pyright) type checkers to properly work, depending
+on the version of Pydantic you are using.
 
-For [Pyright](https://microsoft.github.io/pyright) (VS Code/Pylance) type-checking to work
-with Pydantic 1.0, you must set `defineConstant = { "PYDANTIC_1" = true }` in your
-[Pyright configuration](https://microsoft.github.io/pyright/#/configuration).
+| Pydantic Version | [mypy config][1]            | mypy cli                    | [Pyright config][2]                         |
+|------------------|-----------------------------|-----------------------------|---------------------------------------------|
+| 2.0+             | `always_false = PYDANTIC_1` | `--always-false PYDANTIC_1` | `defineConstant = { "PYDANTIC_1" = false }` |
+| 1.8-1.10         | `always_true = PYDANTIC_1`  | `--always-true PYDANTIC_1`  | `defineConstant = { "PYDANTIC_1" = true }`  |
+
+[1]: https://mypy.readthedocs.io/en/latest/config_file.html
+[2]: https://microsoft.github.io/pyright/#/configuration
 
 ## Changelog
 
 ### [Unreleased]
 
-- Update to pydantic 1.10. Not changing to 2.0 yet.
 - Add validators for `PurePath` and `PureWindowsPath`
 - Simplify JSON encoder specification to work for all `PurePaths`
 - Add ability to interpret a string value in a field that should be a sub-model as a path
