@@ -1,37 +1,118 @@
 # nested-config README
 
-**nested-config** is a simple extension to `BaseModel` from
-[**pydantic**](https://github.com/samuelcolvin/pydantic/) which adds TOML parsing and JSON serialization of
-PurePosixPath objects.
-
-## Purpose
-
-1. Provide short classmethod for reading pydantic models from TOML strings or files.
-2. Include validation and JSON serialization for PurePosixPath, used for remote destinations (e.g. rsync or
-   ssh).
+**nested-config** provides for parsing configuration files that include paths to other
+config files into [Pydantic](https://github.com/samuelcolvin/pydantic/) model instances.
+It also supports validating and JSON-encoding `pathlib.PurePath` on Pydantic 1.8+.
 
 ## Usage
+
+**nested-config** may be used in your project in two main ways.
+
+1. You may simply call `nested_config.pyd_obj_from_config()` with a config file path and a
+   Pydantic model which may or may not include nested Pydantic models. If there are nested
+   models and the config file has string values for those fields, those values are
+   interpreted as paths to other config files and those are recursively read into their
+   respective Pydantic models using `pyd_obj_from_config()`. The `loader` kwarg allows the
+   use of any config file loader such as `load_toml` in the below example, or an
+   equivalent function for e.g. YAML or JSON.
+
+   Example:
+
+   **house.yaml**
+
+   ```yaml
+   name: my house
+   dimensions: dimensions.yaml
+   ```
+
+   **dimensions.yaml**
+
+   ```yaml
+   length: 10
+   width: 20
+   ```
+
+   **parse_house.py**
+
+   ```python
+   import pydantic
+   import yaml
+
+   from nested_config import pyd_obj_from_config
+
+   class Dimensions(pydantic.BaseModel):
+       length: int
+       width: int
+
+
+   class House(pydantic.BaseModel):
+       name: str
+       dimensions: Dimensions
+
+
+   def load_yaml(yaml_path):
+       with open(yaml_path, "rb") as fobj:
+           return yaml.load(fobj)
+
+   house = pyd_obj_from_config("house.yaml", House, loader=load_yaml)
+   ```
+
+2. Alternatively, if you're using TOML config files, you can use `nested_config.BaseModel`
+   which subclasses `pydantic.BaseModel` and adds a `from_toml` classmethod to simplify
+   the code:
+
+   **house.toml**
+
+   ```toml
+   name = "my house"
+   dimensions = "dimensions.toml"
+   ```
+
+   **dimensions.toml**
+
+   ```toml
+   length = 10
+   width = 20
+   ```
+
+   **parse_house.py**
+
+   ```python
+   import nested_config
+
+   class Dimensions(nested_config.BaseModel):
+       length: int
+       width: int
+
+
+   class House(nested_config.BaseModel):
+       name: str
+       dimensions: Dimensions
+
+
+   house = House.from_toml("house.toml", House, loader=load_toml)
+   ```
+
+An bonus feature of **nested-config** is that it provides for validation and JSON encoding
+of `pathlib.PurePath` and its subclasses in Pydantic <2.0 (this is built into Pydantic
+2.0+). All that is needed is an import of `nested_config`. Example:
 
 ```python
 from pathlib import PurePosixPath
 
-from nested_config import BaseModel  # subclasses BaseModel from pydantic
+import nested_config
+import pydantic
 
 
-class MyModel(BaseModel):
+class RsyncDestination(pydantic.BaseModel):
     remote_server: str
     remote_path: PurePosixPath
 
 
-toml_str = '''\
-remote_server = "rsync.example.com"
-remote_path = "shared/documents/report.xls"
-'''
+dest = RsyncDestination(remote_server="rsync.example.com", remote_path="/data/incoming")
 
-my_model = MyModel.from_tomls(toml_str)  # can also use .from_toml to read from file.
-
-my_model  # MyModel(remote_server='rsync.example.com', remote_path=PurePosixPath('shared/documents/report.xls'))
-my_model.json()  # '{"remote_server": "rsync.example.com", "remote_path": "shared/documents/report.xls"}'
+dest  # RsyncDestination(remote_server='rsync.example.com', remote_path=PurePosixPath('/data/incoming'))
+dest.json()  # '{"remote_server":"rsync.example.com","remote_path":"/data/incoming"}'
 
 ```
 
@@ -55,6 +136,7 @@ on the version of Pydantic you are using.
 
 ### [Unreleased]
 
+- ...much more to add here...
 - Add validators for `PurePath` and `PureWindowsPath`
 - Simplify JSON encoder specification to work for all `PurePaths`
 - Add ability to interpret a string value in a field that should be a sub-model as a path
