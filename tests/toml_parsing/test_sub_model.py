@@ -8,12 +8,12 @@ import pytest
 from nested_config import pyd_obj_from_config
 from nested_config.base_model import _toml_load
 
-SCRIPTDIR = Path(__file__).parent
-HOUSE_TOML_PATH = SCRIPTDIR / "house.toml"
-HOUSE_TOML_BAD_DIMPATH_PATH = SCRIPTDIR / "house_bad_dimpath.toml"
-HOUSE_TOML_LISTDIM_PATH = SCRIPTDIR / "house_listdim.toml"
-HOUSE_TOML_DICTDIM_PATH = SCRIPTDIR / "house_dictdim.toml"
-HOUSE_WITH_GARAGE_TOML_PATH = SCRIPTDIR / "house_with_garage.toml"
+TOML_DIR = Path(__file__).parent / "toml_files"
+HOUSE_TOML_PATH = TOML_DIR / "house.toml"
+HOUSE_TOML_BAD_DIMPATH_PATH = TOML_DIR / "house_bad_dimpath.toml"
+HOUSE_TOML_LISTDIM_PATH = TOML_DIR / "house_listdim.toml"
+HOUSE_TOML_DICTDIM_PATH = TOML_DIR / "house_dictdim.toml"
+HOUSE_WITH_GARAGE_TOML_PATH = TOML_DIR / "house_with_garage.toml"
 HOUSE_DIMENSIONS = {"length": 40, "width": 20, "height": 10}
 GARAGE_DIMENSIONS = {"length": 15, "width": 15, "height": 8}
 GARAGE_NAME = "way out back"

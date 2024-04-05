@@ -7,7 +7,7 @@ import pydantic
 import nested_config
 from nested_config.base_model import _toml_load
 
-TOML_PATH = Path(__file__).parent / "simple_house.toml"
+TOML_PATH = Path(__file__).parent / "toml_files" / "simple_house.toml"
 
 
 class House(nested_config.BaseModel):
