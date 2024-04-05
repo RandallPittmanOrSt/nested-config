@@ -4,13 +4,13 @@ from typing import Any, Dict, Optional, Protocol, Type
 
 import pydantic
 import pydantic.fields
-from setuptools._vendor.packaging.version import Version
+from setuptools._vendor.packaging.version import Version  # type: ignore
 from typing_extensions import TypeAlias
 
 from pydantic_plus._types import PydModelT
 
-PYDANTIC_1 = Version(pydantic.__version__) < Version("2.0")
-
+PYDANTIC_1 = Version(pydantic.VERSION) < Version("2.0")
+PYDANTIC_110 = PYDANTIC_1 and Version(pydantic.VERSION) >= Version("1.10")
 
 class HasAnnotation(Protocol):
     """Protocol will allow some Pydantic 2.0 compatibility down the road"""
@@ -22,6 +22,13 @@ if PYDANTIC_1:
     ModelFields: TypeAlias = Dict[str, pydantic.fields.ModelField]
 else:
     ModelFields: TypeAlias = Dict[str, pydantic.fields.FieldInfo]
+
+
+def get_field_annotation(model: Type[pydantic.BaseModel], field_name: str):
+    if PYDANTIC_1 and not PYDANTIC_110:
+        return get_model_fields(model)[field_name].outer_type_
+    else:
+        return get_model_fields(model)[field_name].annotation
 
 
 def get_model_fields(model: Type[pydantic.BaseModel]) -> ModelFields:

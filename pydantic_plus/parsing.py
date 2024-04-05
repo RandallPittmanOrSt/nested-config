@@ -48,11 +48,10 @@ def pyd_obj_from_config(
     config_path = Path(config_path)
     # Get the config dict and the model fields
     config_dict = loader(config_path)
-    model_fields = _compat.get_model_fields(model)
     # preparse the config (possibly loading nested configs)
     config_dict = {
         key: _preparse_config_value(
-            value, model_fields[key].annotation, config_path, loader
+            value, _compat.get_field_annotation(model, key), config_path, loader
         )
         for key, value in config_dict.items()
     }
