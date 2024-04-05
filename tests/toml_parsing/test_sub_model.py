@@ -5,7 +5,6 @@ from typing import Dict, List, Optional
 import pydantic
 import pytest
 
-
 from nested_config import pyd_obj_from_config
 from nested_config.base_model import _toml_load
 

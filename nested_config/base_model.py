@@ -5,8 +5,8 @@ Pydantic BaseModel extended a bit:
   - from_toml and from_tomls classmethods
 """
 
-from pathlib import Path, PurePath
 import sys
+from pathlib import Path, PurePath
 from typing import Type
 
 import pydantic
