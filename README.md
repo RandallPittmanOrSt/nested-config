@@ -55,6 +55,7 @@ It also supports validating and JSON-encoding `pathlib.PurePath` on Pydantic 1.8
            return yaml.load(fobj)
 
    house = pyd_obj_from_config("house.yaml", House, loader=load_yaml)
+   house  # House(name='my house', dimensions=Dimensions(length=10, width=20))
    ```
 
 2. Alternatively, if you're using TOML config files, you can use `nested_config.BaseModel`
@@ -71,8 +72,8 @@ It also supports validating and JSON-encoding `pathlib.PurePath` on Pydantic 1.8
    **dimensions.toml**
 
    ```toml
-   length = 10
-   width = 20
+   length = 12.6
+   width = 25.3
    ```
 
    **parse_house.py**
@@ -81,8 +82,8 @@ It also supports validating and JSON-encoding `pathlib.PurePath` on Pydantic 1.8
    import nested_config
 
    class Dimensions(nested_config.BaseModel):
-       length: int
-       width: int
+       length: float
+       width: float
 
 
    class House(nested_config.BaseModel):
@@ -91,7 +92,7 @@ It also supports validating and JSON-encoding `pathlib.PurePath` on Pydantic 1.8
 
 
    house = House.from_toml("house.toml", House)
-   house  # House(name='my house', dimensions=Dimensions(length=10, width=20))
+   house  # House(name='my house', dimensions=Dimensions(length=12.6, width=25.3))
    ```
 
 An bonus feature of **nested-config** is that it provides for validation and JSON encoding
