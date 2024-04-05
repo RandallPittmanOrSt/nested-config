@@ -15,9 +15,9 @@ if sys.version_info < (3, 11):
 else:
     from tomllib import load as toml_load_fobj
 
-from pydantic_plus import parsing
-from pydantic_plus._compat import PYDANTIC_1, parse_obj
-from pydantic_plus._types import ConfigDict, PathLike, PydModelT
+from nested_config import parsing
+from nested_config._compat import PYDANTIC_1, parse_obj
+from nested_config._types import ConfigDict, PathLike, PydModelT
 
 
 def _toml_load(path: PathLike) -> ConfigDict:

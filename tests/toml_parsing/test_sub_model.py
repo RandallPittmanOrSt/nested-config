@@ -6,8 +6,8 @@ import pydantic
 import pytest
 
 
-from pydantic_plus import pyd_obj_from_config
-from pydantic_plus.base_model import _toml_load
+from nested_config import pyd_obj_from_config
+from nested_config.base_model import _toml_load
 
 SCRIPTDIR = Path(__file__).parent
 HOUSE_TOML_PATH = SCRIPTDIR / "house.toml"

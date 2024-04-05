@@ -1,6 +1,6 @@
-# pydantic-plus README
+# nested-config README
 
-**pydantic-plus** is a simple extension to `BaseModel` from
+**nested-config** is a simple extension to `BaseModel` from
 [**pydantic**](https://github.com/samuelcolvin/pydantic/) which adds TOML parsing and JSON serialization of
 PurePosixPath objects.
 
@@ -15,7 +15,7 @@ PurePosixPath objects.
 ```python
 from pathlib import PurePosixPath
 
-from pydantic_plus import BaseModel  # subclasses BaseModel from pydantic
+from nested_config import BaseModel  # subclasses BaseModel from pydantic
 
 
 class MyModel(BaseModel):
@@ -37,7 +37,7 @@ my_model.json()  # '{"remote_server": "rsync.example.com", "remote_path": "share
 
 ## Pydantic 1.0/2.0 Compatibility
 
-pydantic-plus is runtime compatible with Pydantic 1.8+ and Pydantic 2.0.
+nested-config is runtime compatible with Pydantic 1.8+ and Pydantic 2.0.
 
 The follow table gives info on how to configure the [mypy](https://www.mypy-lang.org/) and
 [Pyright](https://microsoft.github.io/pyright) type checkers to properly work, depending
@@ -67,5 +67,5 @@ on the version of Pydantic you are using.
 - Export `TomlParsingError` from rtoml for downstream exception handling (without needing to explicitly
   import rtoml).
 
-[Unreleased]: https://gitlab.com/osu-nrsg/pydantic-plus/-/compare/v1.1.3...master
-[1.1.3]: https://gitlab.com/osu-nrsg/pydantic-plus/-/tags/v1.1.3
+[Unreleased]: https://gitlab.com/osu-nrsg/nested-config/-/compare/v1.1.3...master
+[1.1.3]: https://gitlab.com/osu-nrsg/nested-config/-/tags/v1.1.3

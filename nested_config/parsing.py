@@ -7,8 +7,8 @@ from typing import Type
 
 import pydantic
 
-from pydantic_plus import _compat
-from pydantic_plus._types import (
+from nested_config import _compat
+from nested_config._types import (
     UNION_TYPES,
     ConfigDictLoader,
     PathLike,

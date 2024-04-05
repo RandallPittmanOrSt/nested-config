@@ -7,7 +7,7 @@ import pydantic.fields
 from setuptools._vendor.packaging.version import Version  # type: ignore
 from typing_extensions import TypeAlias
 
-from pydantic_plus._types import PydModelT
+from nested_config._types import PydModelT
 
 PYDANTIC_1 = Version(pydantic.VERSION) < Version("2.0")
 

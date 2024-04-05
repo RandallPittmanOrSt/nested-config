@@ -8,7 +8,7 @@ import pydantic
 import pydantic.errors
 import pydantic.validators
 
-from pydantic_plus._compat import PYDANTIC_1
+from nested_config._compat import PYDANTIC_1
 
 PathT = TypeVar("PathT", bound=PurePath)
 

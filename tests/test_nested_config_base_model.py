@@ -1,27 +1,27 @@
 """Test that we can validate strings as PurePaths and also json-serialize them using
-pydantic_plus."""
+nested_config."""
 
 import json
 import os
 from pathlib import PurePath, PurePosixPath, PureWindowsPath
 
-import pydantic_plus
-from pydantic_plus._compat import dump_json, parse_obj
+import nested_config
+from nested_config._compat import dump_json, parse_obj
 
 PURE_POSIX_PATH = "/some/pure/path"
 PURE_WINDOWS_PATH = "C:\\some\\pure\\path"
 NATIVE_PURE_PATH = PURE_WINDOWS_PATH if os.name == "nt" else PURE_POSIX_PATH
 
 
-class ModelWithPurePath(pydantic_plus.BaseModel):
+class ModelWithPurePath(nested_config.BaseModel):
     p: PurePath
 
 
-class ModelWithPurePosixPath(pydantic_plus.BaseModel):
+class ModelWithPurePosixPath(nested_config.BaseModel):
     p: PurePosixPath
 
 
-class ModelWithPureWindowsPath(pydantic_plus.BaseModel):
+class ModelWithPureWindowsPath(nested_config.BaseModel):
     p: PureWindowsPath
 
 

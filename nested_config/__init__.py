@@ -1,4 +1,4 @@
-"""pydantic_plus - This package does two things:
+"""nested_config - This package does two things:
 
 1. It adds the ability to parse config files into Pydantic model instances, including
    config files that include string path references to other config files in place of
@@ -10,13 +10,13 @@
    Pydantic v1 (these are already included in Pydantic 2.)
 """
 
-from pydantic_plus._validators import (
+from nested_config._validators import (
     patch_pydantic_validators as _patch_pydantic_validators,
 )
-from pydantic_plus.base_model import BaseModel
-from pydantic_plus.json import patch_pydantic_json_encoders
-from pydantic_plus.parsing import ispydmodel, pyd_obj_from_config
-from pydantic_plus.version import __version__
+from nested_config.base_model import BaseModel
+from nested_config.json import patch_pydantic_json_encoders
+from nested_config.parsing import ispydmodel, pyd_obj_from_config
+from nested_config.version import __version__
 
 # We always patch the validators, but in the future this may be made optional
 _patch_pydantic_validators()

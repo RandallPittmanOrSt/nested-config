@@ -1,5 +1,5 @@
-"""Test that we can just patch pydantic with pydantic_plus rather than using the
-pydantic_plus base model"""
+"""Test that we can just patch pydantic with nested_config rather than using the
+nested_config base model"""
 
 import json
 import os
@@ -7,10 +7,10 @@ from pathlib import PurePath, PurePosixPath, PureWindowsPath
 
 import pydantic
 
-import pydantic_plus
-from pydantic_plus._compat import PYDANTIC_1, dump_json, parse_obj
+import nested_config
+from nested_config._compat import PYDANTIC_1, dump_json, parse_obj
 
-pydantic_plus.patch_pydantic_json_encoders()
+nested_config.patch_pydantic_json_encoders()
 
 PURE_POSIX_PATH = "/some/pure/path"
 PURE_WINDOWS_PATH = "C:\\some\\pure\\path"
