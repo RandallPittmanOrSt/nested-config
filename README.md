@@ -90,7 +90,8 @@ It also supports validating and JSON-encoding `pathlib.PurePath` on Pydantic 1.8
        dimensions: Dimensions
 
 
-   house = House.from_toml("house.toml", House, loader=load_toml)
+   house = House.from_toml("house.toml", House)
+   house  # House(name='my house', dimensions=Dimensions(length=10, width=20))
    ```
 
 An bonus feature of **nested-config** is that it provides for validation and JSON encoding
