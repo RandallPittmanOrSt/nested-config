@@ -60,8 +60,7 @@ def pyd_obj_from_config(
         for key, value in config_dict.items()
     }
     # Create and validate the config object
-    config_obj = _compat.parse_obj(model, config_dict)
-    return config_obj
+    return _compat.parse_obj(model, config_dict)
 
 
 def _preparse_config_value(field_value, field_annotation, config_path: Path):
