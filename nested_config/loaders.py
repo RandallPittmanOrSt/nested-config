@@ -1,5 +1,6 @@
 """loaders.py - Manage config file loaders"""
 
+import contextlib
 import json
 import sys
 from pathlib import Path
@@ -10,15 +11,16 @@ if sys.version_info < (3, 11):
 else:
     from tomllib import load as toml_load_fobj
 
-try:
+YAML_INSTALLED = False
+with contextlib.suppress(ImportError):
     import yaml  # type: ignore
+
+    YAML_INSTALLED = True
 
     try:
         from yaml import CLoader as YAMLLoader  # type: ignore
     except ImportError:
         from yaml import Loader as YAMLLoader  # type: ignore
-except ImportError:
-    yaml = None
 
 from nested_config._types import ConfigDict, ConfigDictLoader, PathLike
 
@@ -49,7 +51,7 @@ _loaders: Dict[str, ConfigDictLoader] = {".toml": toml_load, ".json": json_load}
 """Mapping of config file extension to config file loader"""
 
 
-if yaml:
+if YAML_INSTALLED:
 
     def yaml_load(path: PathLike) -> ConfigDict:
         """Load a YAML config file"""

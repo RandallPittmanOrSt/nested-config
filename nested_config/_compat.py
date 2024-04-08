@@ -27,17 +27,29 @@ else:
 def get_field_annotation(model: Type[pydantic.BaseModel], field_name: str):
     # "annotation" exists in pydantic 1.10, but not 1.8 or 1.9
     field = get_model_fields(model)[field_name]
-    return field.outer_type_ if PYDANTIC_1 else field.annotation
+    if PYDANTIC_1:
+        return field.outer_type_
+    else:
+        return field.annotation
 
 
 def get_model_fields(model: Type[pydantic.BaseModel]) -> ModelFields:
-    return model.__fields__ if PYDANTIC_1 else model.model_fields
+    if PYDANTIC_1:
+        return model.__fields__
+    else:
+        return model.model_fields
 
 
 def parse_obj(model: Type[PydModelT], obj: Any) -> PydModelT:
-    return model.parse_obj(obj) if PYDANTIC_1 else model.model_validate(obj)
+    if PYDANTIC_1:
+        return model.parse_obj(obj)
+    else:
+        return model.model_validate(obj)
 
 
 def dump_json(model: pydantic.BaseModel) -> str:
     """Compatibility of json dump function for testing"""
-    return model.json() if PYDANTIC_1 else model.model_dump_json()
+    if PYDANTIC_1:
+        return model.json()
+    else:
+        return model.model_dump_json()
