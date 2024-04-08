@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "nested-config"
-version = "2.0.0b0"
+version = "2.0.0b1"
 description = """\
 Parse configuration files that include paths to other config files into Pydantic model\
  instances. Also support `pathlib.PurePath` on Pydantic 1.8+.\
@@ -27,15 +27,21 @@ python = "^3.8"
 pydantic = ">=1.8,<3.0.0"
 single-version = "^1.6.0"
 tomli = {version = "^2.0.1", python = "<3.11"}
-typing-extensions = "^4.10.0"
+typing-extensions = "^4.11.0"
+pyyaml = {version = "^6.0.1", optional = true}
 
 [tool.poetry.group.dev.dependencies]
 ipython = "^7.22.0"
-ruff = "^0.3.3"
+ruff = "^0.3.5"
 pytest = "^8.1.1"
 mypy = "^1.9.0"
 pyyaml = "^6.0.1"
 types-pyyaml = "^6.0.12.20240311"
+
+
+
+[tool.poetry.extras]
+yaml = ["pyyaml"]
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

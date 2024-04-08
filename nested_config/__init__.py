@@ -17,6 +17,7 @@ from nested_config.base_model import BaseModel
 from nested_config.json import (
     patch_pydantic_json_encoders as _patch_pydantic_json_encoders,
 )
+from nested_config.loaders import ConfigLoaderError, NoLoaderError, update_loaders
 from nested_config.parsing import ispydmodel, pyd_obj_from_config
 from nested_config.version import __version__
 

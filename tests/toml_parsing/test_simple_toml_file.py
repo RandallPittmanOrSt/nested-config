@@ -5,7 +5,6 @@ from pathlib import Path
 import pydantic
 
 import nested_config
-from nested_config.base_model import _toml_load
 
 TOML_PATH = Path(__file__).parent / "toml_files" / "simple_house.toml"
 
@@ -27,10 +26,10 @@ HOUSE_DATA = {"name": "home", "length": 30, "width": 20}
 
 def test_basic_house_file():
     """Test creating a House with the from_toml method of nested_config.BaseModel"""
-    assert House.from_toml(TOML_PATH) == House(**HOUSE_DATA)
+    assert House.from_config(TOML_PATH) == House(**HOUSE_DATA)
 
 
 def test_basic_house_file2():
     """Test creating a House2 with nested_config.obj_from_toml"""
-    house2 = nested_config.pyd_obj_from_config(TOML_PATH, House2, loader=_toml_load)
+    house2 = nested_config.pyd_obj_from_config(TOML_PATH, House2)
     assert house2 == House2(**HOUSE_DATA)

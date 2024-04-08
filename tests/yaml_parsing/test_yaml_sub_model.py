@@ -1,13 +1,10 @@
-from functools import partial
 from pathlib import Path
 from typing import Dict, List, Optional
 
 import pydantic
 import pytest
-import yaml
 
 from nested_config import pyd_obj_from_config
-from nested_config._types import PathLike, ConfigDict
 
 YAML_DIR = Path(__file__).parent / "yaml_files"
 HOUSE_YAML_PATH = YAML_DIR / "house.yaml"
@@ -18,11 +15,6 @@ HOUSE_WITH_GARAGE_YAML_PATH = YAML_DIR / "house_with_garage.yaml"
 HOUSE_DIMENSIONS = {"length": 40, "width": 20, "height": 10}
 GARAGE_DIMENSIONS = {"length": 15, "width": 15, "height": 8}
 GARAGE_NAME = "way out back"
-
-
-def _yaml_load(path: PathLike) -> ConfigDict:
-    with open(path, "rb") as fobj:
-        return yaml.load(fobj, Loader=yaml.Loader)
 
 
 class Dimensions(pydantic.BaseModel):
@@ -62,33 +54,30 @@ class HouseWithGarage(pydantic.BaseModel):
     garage: Optional[Garage]
 
 
-pyd_obj_from_yaml = partial(pyd_obj_from_config, loader=_yaml_load)
-
-
 def test_submodel_yaml():
-    house = pyd_obj_from_yaml(HOUSE_YAML_PATH, House)
+    house = pyd_obj_from_config(HOUSE_YAML_PATH, House)
     assert house.dimensions == Dimensions(**HOUSE_DIMENSIONS)
 
 
 def test_optional_submodel():
-    house = pyd_obj_from_yaml(HOUSE_YAML_PATH, HouseMaybeDim)
+    house = pyd_obj_from_config(HOUSE_YAML_PATH, HouseMaybeDim)
     assert house.dimensions == Dimensions(**HOUSE_DIMENSIONS)
 
 
 def test_submodel_list():
-    house = pyd_obj_from_yaml(HOUSE_YAML_LISTDIM_PATH, HouseListDim)
+    house = pyd_obj_from_config(HOUSE_YAML_LISTDIM_PATH, HouseListDim)
     assert house.dimensions[0] == Dimensions(**HOUSE_DIMENSIONS)
     assert house.dimensions[1] == Dimensions(**GARAGE_DIMENSIONS)
 
 
 def test_submodel_dict():
-    house = pyd_obj_from_yaml(HOUSE_YAML_DICTDIM_PATH, HouseDictDim)
+    house = pyd_obj_from_config(HOUSE_YAML_DICTDIM_PATH, HouseDictDim)
     assert house.dimensions["house"] == Dimensions(**HOUSE_DIMENSIONS)
     assert house.dimensions["garage"] == Dimensions(**GARAGE_DIMENSIONS)
 
 
 def test_subsubmodel():
-    house = pyd_obj_from_yaml(HOUSE_WITH_GARAGE_YAML_PATH, HouseWithGarage)
+    house = pyd_obj_from_config(HOUSE_WITH_GARAGE_YAML_PATH, HouseWithGarage)
     assert house.dimensions == Dimensions(**HOUSE_DIMENSIONS)
     assert house.garage
     assert house.garage.name == GARAGE_NAME
@@ -97,4 +86,4 @@ def test_subsubmodel():
 
 def test_submodel_yaml_badpath():
     with pytest.raises(FileNotFoundError):
-        pyd_obj_from_yaml(HOUSE_YAML_BAD_DIMPATH_PATH, House)
+        pyd_obj_from_config(HOUSE_YAML_BAD_DIMPATH_PATH, House)

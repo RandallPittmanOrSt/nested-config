@@ -1,4 +1,3 @@
-from functools import partial
 from pathlib import Path
 from typing import Dict, List, Optional
 
@@ -6,7 +5,6 @@ import pydantic
 import pytest
 
 from nested_config import pyd_obj_from_config
-from nested_config.base_model import _toml_load
 
 TOML_DIR = Path(__file__).parent / "toml_files"
 HOUSE_TOML_PATH = TOML_DIR / "house.toml"
@@ -56,33 +54,30 @@ class HouseWithGarage(pydantic.BaseModel):
     garage: Optional[Garage]
 
 
-pyd_obj_from_toml = partial(pyd_obj_from_config, loader=_toml_load)
-
-
 def test_submodel_toml():
-    house = pyd_obj_from_toml(HOUSE_TOML_PATH, House)
+    house = pyd_obj_from_config(HOUSE_TOML_PATH, House)
     assert house.dimensions == Dimensions(**HOUSE_DIMENSIONS)
 
 
 def test_optional_submodel():
-    house = pyd_obj_from_toml(HOUSE_TOML_PATH, HouseMaybeDim)
+    house = pyd_obj_from_config(HOUSE_TOML_PATH, HouseMaybeDim)
     assert house.dimensions == Dimensions(**HOUSE_DIMENSIONS)
 
 
 def test_submodel_list():
-    house = pyd_obj_from_toml(HOUSE_TOML_LISTDIM_PATH, HouseListDim)
+    house = pyd_obj_from_config(HOUSE_TOML_LISTDIM_PATH, HouseListDim)
     assert house.dimensions[0] == Dimensions(**HOUSE_DIMENSIONS)
     assert house.dimensions[1] == Dimensions(**GARAGE_DIMENSIONS)
 
 
 def test_submodel_dict():
-    house = pyd_obj_from_toml(HOUSE_TOML_DICTDIM_PATH, HouseDictDim)
+    house = pyd_obj_from_config(HOUSE_TOML_DICTDIM_PATH, HouseDictDim)
     assert house.dimensions["house"] == Dimensions(**HOUSE_DIMENSIONS)
     assert house.dimensions["garage"] == Dimensions(**GARAGE_DIMENSIONS)
 
 
 def test_subsubmodel():
-    house = pyd_obj_from_toml(HOUSE_WITH_GARAGE_TOML_PATH, HouseWithGarage)
+    house = pyd_obj_from_config(HOUSE_WITH_GARAGE_TOML_PATH, HouseWithGarage)
     assert house.dimensions == Dimensions(**HOUSE_DIMENSIONS)
     assert house.garage
     assert house.garage.name == GARAGE_NAME
@@ -91,4 +86,4 @@ def test_subsubmodel():
 
 def test_submodel_toml_badpath():
     with pytest.raises(FileNotFoundError):
-        pyd_obj_from_toml(HOUSE_TOML_BAD_DIMPATH_PATH, House)
+        pyd_obj_from_config(HOUSE_TOML_BAD_DIMPATH_PATH, House)

@@ -10,18 +10,16 @@ import pydantic
 from nested_config import _compat
 from nested_config._types import (
     UNION_TYPES,
-    ConfigDictLoader,
     PathLike,
     PydModelT,
     ispydmodel,
 )
+from nested_config.loaders import load_config
 
 
 def pyd_obj_from_config(
     config_path: PathLike,
     model: Type[PydModelT],
-    *,
-    loader: ConfigDictLoader,
 ) -> PydModelT:
     """Load a config file into a Pydantic model. The config file may contain string paths
     where nested models would be expected. These are preparsed into their respective
@@ -36,22 +34,28 @@ def pyd_obj_from_config(
         A string or pathlib.Path to the config file to parse
     model
         The Pydantic model to use for creating the config object
-    loader
-        A callable that loads a config file into a dict from (exclusively) a pathlib.Path.
-        This will be used for parsing any encapsulated config files.
-
     Returns
     -------
     A Pydantic object of the type specified by the model input.
+
+    Raises
+    ------
+    NoLoaderError
+        No loader is available for the config file extension
+    ConfigLoaderError
+        There was a problem loading a config file with its loader
+    pydantic.ValidationError
+        The data fields or types in the file do not match the model.
+
     """
     # Input arg coercion
     config_path = Path(config_path)
     # Get the config dict and the model fields
-    config_dict = loader(config_path)
+    config_dict = load_config(config_path)
     # preparse the config (possibly loading nested configs)
     config_dict = {
         key: _preparse_config_value(
-            value, _compat.get_field_annotation(model, key), config_path, loader
+            value, _compat.get_field_annotation(model, key), config_path
         )
         for key, value in config_dict.items()
     }
@@ -60,9 +64,7 @@ def pyd_obj_from_config(
     return config_obj
 
 
-def _preparse_config_value(
-    field_value, field_annotation, config_path: Path, loader: ConfigDictLoader
-):
+def _preparse_config_value(field_value, field_annotation, config_path: Path):
     """Check if a model field contains a path to another model and parse it accordingly"""
     # If the annotation is optional, get the enclosed annotation
     field_annotation = _get_optional_ann(field_annotation)
@@ -80,9 +82,7 @@ def _preparse_config_value(
         return field_value
     # 2.
     if isinstance(field_value, str) and ispydmodel(field_annotation, pydantic.BaseModel):
-        return _parse_path_str_into_pydmodel(
-            field_value, field_annotation, config_path, loader
-        )
+        return _parse_path_str_into_pydmodel(field_value, field_annotation, config_path)
     # 3.
     if (
         isinstance(field_value, list)
@@ -90,7 +90,7 @@ def _preparse_config_value(
         and (listval_annotation := _get_list_value_ann(field_annotation))
     ):
         return [
-            _parse_path_str_into_pydmodel(li, listval_annotation, config_path, loader)
+            _parse_path_str_into_pydmodel(li, listval_annotation, config_path)
             for li in field_value
         ]
     # 4.
@@ -100,9 +100,7 @@ def _preparse_config_value(
         and (dictval_annotation := _get_dict_value_ann(field_annotation))
     ):
         return {
-            key: _parse_path_str_into_pydmodel(
-                value, dictval_annotation, config_path, loader
-            )
+            key: _parse_path_str_into_pydmodel(value, dictval_annotation, config_path)
             for key, value in field_value.items()
         }
     # 5.
@@ -110,7 +108,7 @@ def _preparse_config_value(
 
 
 def _parse_path_str_into_pydmodel(
-    path_str: str, model: Type[PydModelT], parent_path: Path, loader: ConfigDictLoader
+    path_str: str, model: Type[PydModelT], parent_path: Path
 ) -> PydModelT:
     """Convert a path string to a path (possibly relative to a parent config path) and
     create an instance of a Pydantic model"""
@@ -123,7 +121,7 @@ def _parse_path_str_into_pydmodel(
             f"Config file '{parent_path}' contains a path to another config file"
             f" '{path_str}' that could not be found."
         )
-    return pyd_obj_from_config(path, model, loader=loader)
+    return pyd_obj_from_config(path, model)
 
 
 def _get_optional_ann(annotation):

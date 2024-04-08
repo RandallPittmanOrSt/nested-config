@@ -5,33 +5,23 @@ Pydantic BaseModel extended a bit:
   - from_toml and from_tomls classmethods
 """
 
-import sys
 from pathlib import Path
 from typing import Type
 
 import pydantic
 
-if sys.version_info < (3, 11):
-    from tomli import load as toml_load_fobj
-else:
-    from tomllib import load as toml_load_fobj
-
 from nested_config import parsing
 from nested_config._compat import parse_obj
-from nested_config._types import ConfigDict, PathLike, PydModelT
-
-
-def _toml_load(path: PathLike) -> ConfigDict:
-    with open(path, "rb") as fobj:
-        return toml_load_fobj(fobj)
+from nested_config._types import PathLike, PydModelT
+from nested_config.loaders import load_config
 
 
 class BaseModel(pydantic.BaseModel):
-    """Extends pydantic.BaseModel with conversion from TOML and incluedes json encoding of
-    PurePosixPath"""
+    """Extends pydantic.BaseModel with from_config classmethod to load a config file into
+    the model."""
 
     @classmethod
-    def from_toml(
+    def from_config(
         cls: Type[PydModelT], toml_path: PathLike, convert_strpaths=True
     ) -> PydModelT:
         """Create Pydantic model from a TOML file
@@ -53,31 +43,16 @@ class BaseModel(pydantic.BaseModel):
 
         Raises
         -------
-        rtoml.TomlParsingError
-            TOML is not valid
+        NoLoaderError
+            No loader is available for the config file extension
+        ConfigLoaderError
+            There was a problem loading a config file with its loader
         pydantic.ValidationError
-            The data fields or types in the TOML file do not match the model
+            The data fields or types in the file do not match the model.
         """
+        toml_path = Path(toml_path)
         if convert_strpaths:
-            return parsing.pyd_obj_from_config(toml_path, cls, loader=_toml_load)
-        else:
-            config_dict = _toml_load(Path(toml_path))
-            return parse_obj(cls, config_dict)
-
-    @classmethod
-    def from_tomls(cls: Type[PydModelT], toml_str: str) -> PydModelT:
-        """Create pydantic model from a TOML string
-
-        Parameters
-        ----------
-        toml_str
-            TOML-formatted data structure
-
-        Raises
-        -------
-        TomlParsingError
-            TOML is not valid
-        ValidationError
-            The data in the TOML file does not match the model
-        """
-        return parse_obj(cls, _toml_load(toml_str))
+            return parsing.pyd_obj_from_config(toml_path, cls)
+        # otherwise just load the config as-is
+        config_dict = load_config(toml_path)
+        return parse_obj(cls, config_dict)
