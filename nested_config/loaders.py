@@ -4,12 +4,14 @@ import contextlib
 import json
 import sys
 from pathlib import Path
-from typing import Dict
+from typing import Dict, Optional
 
 if sys.version_info < (3, 11):
     from tomli import load as toml_load_fobj
 else:
     from tomllib import load as toml_load_fobj
+
+from nested_config._types import ConfigDict, ConfigDictLoader, PathLike
 
 YAML_INSTALLED = False
 with contextlib.suppress(ImportError):
@@ -22,7 +24,6 @@ with contextlib.suppress(ImportError):
     except ImportError:
         from yaml import Loader as YAMLLoader  # type: ignore
 
-from nested_config._types import ConfigDict, ConfigDictLoader, PathLike
 
 
 class NoLoaderError(Exception):
@@ -59,6 +60,7 @@ if YAML_INSTALLED:
             return yaml.load(fobj, Loader=YAMLLoader)
 
     _loaders[".yaml"] = yaml_load
+    _loaders[".yml"] = yaml_load
 
 
 def update_loaders(new_loaders: Dict[str, ConfigDictLoader]):
@@ -67,11 +69,44 @@ def update_loaders(new_loaders: Dict[str, ConfigDictLoader]):
     _loaders.update(new_loaders)
 
 
-def load_config(config_path: Path) -> ConfigDict:
+def _get_loader(config_path: Path, default_suffix: Optional[str] = None):
+    """Get the loader for the specified suffix, or a loader from default suffix"""
     try:
-        loader = _loaders[config_path.suffix]
+        try:
+            return _loaders[config_path.suffix]
+        except KeyError:
+            if default_suffix is not None:
+                return _loaders[default_suffix]
+            raise
     except KeyError:
         raise NoLoaderError(config_path.suffix) from None
+
+
+def load_config(config_path: Path, default_suffix: Optional[str] = None) -> ConfigDict:
+    """Select a loader based on the suffix (extension) of the config file and try to load
+    the config using that loader. E.g. for .toml, use the TOML loader.
+
+    Inputs
+    ------
+    config_path
+        Path to the config file
+    default_suffix
+        Suffix to try if there is no loader for the suffix of config_path or it has no
+        suffix.
+
+    Returns
+    -------
+    ConfigDict
+        A mapping of the data stored in the config file
+
+    Raises
+    ------
+    NoLoaderError (via _get_loader)
+        No loader could be found for the suffix (or default suffix, if provided)
+    ConfigLoaderError
+        There was an error running the loader (e.g. in tomllib or yaml or json)
+    """
+    loader = _get_loader(config_path, default_suffix)
     try:
         return loader(config_path)
     except Exception as ex:

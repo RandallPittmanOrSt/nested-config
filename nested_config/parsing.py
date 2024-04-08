@@ -3,7 +3,7 @@ possibly with nested models specified by string paths."""
 
 import typing
 from pathlib import Path
-from typing import Type
+from typing import Optional, Type
 
 import pydantic
 
@@ -20,13 +20,15 @@ from nested_config.loaders import load_config
 def pyd_obj_from_config(
     config_path: PathLike,
     model: Type[PydModelT],
+    *,
+    default_suffix: Optional[str] = None,
 ) -> PydModelT:
     """Load a config file into a Pydantic model. The config file may contain string paths
     where nested models would be expected. These are preparsed into their respective
     models.
 
-    If paths to nested models are relative, they are assumed to be relative to the path
-    of their parent config file.
+    If paths to nested models are relative, they are assumed to be relative to the path of
+    their parent config file.
 
     Input
     -----
@@ -34,6 +36,10 @@ def pyd_obj_from_config(
         A string or pathlib.Path to the config file to parse
     model
         The Pydantic model to use for creating the config object
+    default_suffix
+        If there is no loader for the config file suffix (or the config file has no
+        suffix) try to load the config with the loader specified by this extension, e.g.
+        '.toml' or '.yml'
     Returns
     -------
     A Pydantic object of the type specified by the model input.
@@ -51,7 +57,7 @@ def pyd_obj_from_config(
     # Input arg coercion
     config_path = Path(config_path)
     # Get the config dict and the model fields
-    config_dict = load_config(config_path)
+    config_dict = load_config(config_path, default_suffix=default_suffix)
     # preparse the config (possibly loading nested configs)
     config_dict = {
         key: _preparse_config_value(
