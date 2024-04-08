@@ -32,7 +32,7 @@ class BaseModel(pydantic.BaseModel):
 
     @classmethod
     def from_toml(
-        cls: Type[PydModelT], toml_path: PathLike, convert_strpaths=False
+        cls: Type[PydModelT], toml_path: PathLike, convert_strpaths=True
     ) -> PydModelT:
         """Create Pydantic model from a TOML file
 
