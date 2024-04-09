@@ -130,7 +130,7 @@ See [tests](tests) for more detailed use-cases.
 | YAML   | .yaml, .yml   | `pyyaml` (extra dependency[^yaml-extra])   |
 
 [^yaml-extra]: Install `pyyaml` separately with `pip` or install **nested-config** with
-               `pip install nested_config[yaml]`.
+               `pip install nested-config[yaml]`.
 
 ### Adding loaders
 
