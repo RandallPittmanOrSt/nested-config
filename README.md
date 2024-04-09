@@ -56,7 +56,7 @@ It also supports validating and JSON-encoding `pathlib.PurePath` on Pydantic 1.8
    ```
 
 2. Alternatively, you can use `nested_config.BaseModel` which subclasses
-   `pydantic.BaseModel` and adds a `from_config` classmethod to simplify the code:
+   `pydantic.BaseModel` and adds a `from_config` classmethod:
 
    **house.toml**
 
