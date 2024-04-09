@@ -14,7 +14,7 @@ from nested_config._types import (
     PydModelT,
     ispydmodel,
 )
-from nested_config.loaders import load_config
+from nested_config.loaders import load_config, set_default_loader
 
 
 def pyd_obj_from_config(
@@ -54,10 +54,12 @@ def pyd_obj_from_config(
         The data fields or types in the file do not match the model.
 
     """
+    if default_suffix:
+        set_default_loader(default_suffix)
     # Input arg coercion
     config_path = Path(config_path)
     # Get the config dict and the model fields
-    config_dict = load_config(config_path, default_suffix=default_suffix)
+    config_dict = load_config(config_path)
     # preparse the config (possibly loading nested configs)
     config_dict = {
         key: _preparse_config_value(

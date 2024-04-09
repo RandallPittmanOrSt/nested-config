@@ -25,7 +25,6 @@ with contextlib.suppress(ImportError):
         from yaml import Loader as YAMLLoader  # type: ignore
 
 
-
 class NoLoaderError(Exception):
     def __init__(self, suffix: str):
         super().__init__(f"There is no loader for file extension {suffix}")
@@ -48,7 +47,10 @@ def json_load(path: PathLike) -> ConfigDict:
         return json.load(fobj)
 
 
-_loaders: Dict[str, ConfigDictLoader] = {".toml": toml_load, ".json": json_load}
+config_dict_loaders: Dict[str, ConfigDictLoader] = {
+    ".toml": toml_load,
+    ".json": json_load,
+}
 """Mapping of config file extension to config file loader"""
 
 
@@ -59,30 +61,38 @@ if YAML_INSTALLED:
         with open(path, "r") as fobj:
             return yaml.load(fobj, Loader=YAMLLoader)
 
-    _loaders[".yaml"] = yaml_load
-    _loaders[".yml"] = yaml_load
+    config_dict_loaders[".yaml"] = yaml_load
+    config_dict_loaders[".yml"] = yaml_load
 
 
-def update_loaders(new_loaders: Dict[str, ConfigDictLoader]):
-    """Update the config file loaders dict"""
-    global _loaders
-    _loaders.update(new_loaders)
-
-
-def _get_loader(config_path: Path, default_suffix: Optional[str] = None):
+def _get_loader(config_path: Path):
     """Get the loader for the specified suffix, or a loader from default suffix"""
     try:
         try:
-            return _loaders[config_path.suffix]
+            return config_dict_loaders[config_path.suffix]
         except KeyError:
-            if default_suffix is not None:
-                return _loaders[default_suffix]
+            if default_loader := _get_default_loader():
+                return default_loader
             raise
     except KeyError:
         raise NoLoaderError(config_path.suffix) from None
 
 
-def load_config(config_path: Path, default_suffix: Optional[str] = None) -> ConfigDict:
+def _get_default_loader() -> Optional[ConfigDictLoader]:
+    try:
+        return config_dict_loaders["DEFAULT"]
+    except KeyError:
+        return None
+
+
+def set_default_loader(default_suffix: str):
+    try:
+        config_dict_loaders["DEFAULT"] = config_dict_loaders[default_suffix]
+    except KeyError:
+        raise NoLoaderError(default_suffix) from None
+
+
+def load_config(config_path: Path) -> ConfigDict:
     """Select a loader based on the suffix (extension) of the config file and try to load
     the config using that loader. E.g. for .toml, use the TOML loader.
 
@@ -90,9 +100,6 @@ def load_config(config_path: Path, default_suffix: Optional[str] = None) -> Conf
     ------
     config_path
         Path to the config file
-    default_suffix
-        Suffix to try if there is no loader for the suffix of config_path or it has no
-        suffix.
 
     Returns
     -------
@@ -106,7 +113,7 @@ def load_config(config_path: Path, default_suffix: Optional[str] = None) -> Conf
     ConfigLoaderError
         There was an error running the loader (e.g. in tomllib or yaml or json)
     """
-    loader = _get_loader(config_path, default_suffix)
+    loader = _get_loader(config_path)
     try:
         return loader(config_path)
     except Exception as ex:
