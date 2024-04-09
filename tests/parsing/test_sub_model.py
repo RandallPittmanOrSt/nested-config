@@ -4,7 +4,7 @@ from typing import Dict, List, Optional
 import pydantic
 import pytest
 
-from nested_config import pyd_obj_from_config
+from nested_config import validate_config
 
 TOML_DIR = Path(__file__).parent / "toml_files"
 YAML_DIR = Path(__file__).parent / "yaml_files"
@@ -63,33 +63,33 @@ class HouseWithGarage(pydantic.BaseModel):
 
 @pytest.mark.parametrize("config_path", _test_paths(HOUSE_TOML_PATH))
 def test_submodel(config_path):
-    house = pyd_obj_from_config(config_path, House)
+    house = validate_config(config_path, House)
     assert house.dimensions == Dimensions(**HOUSE_DIMENSIONS)
 
 
 @pytest.mark.parametrize("config_path", _test_paths(HOUSE_TOML_PATH))
 def test_optional_submodel(config_path):
-    house = pyd_obj_from_config(config_path, HouseMaybeDim)
+    house = validate_config(config_path, HouseMaybeDim)
     assert house.dimensions == Dimensions(**HOUSE_DIMENSIONS)
 
 
 @pytest.mark.parametrize("config_path", _test_paths(HOUSE_TOML_LISTDIM_PATH))
 def test_submodel_list(config_path):
-    house = pyd_obj_from_config(config_path, HouseListDim)
+    house = validate_config(config_path, HouseListDim)
     assert house.dimensions[0] == Dimensions(**HOUSE_DIMENSIONS)
     assert house.dimensions[1] == Dimensions(**GARAGE_DIMENSIONS)
 
 
 @pytest.mark.parametrize("config_path", _test_paths(HOUSE_TOML_DICTDIM_PATH))
 def test_submodel_dict(config_path):
-    house = pyd_obj_from_config(config_path, HouseDictDim)
+    house = validate_config(config_path, HouseDictDim)
     assert house.dimensions["house"] == Dimensions(**HOUSE_DIMENSIONS)
     assert house.dimensions["garage"] == Dimensions(**GARAGE_DIMENSIONS)
 
 
 @pytest.mark.parametrize("config_path", _test_paths(HOUSE_WITH_GARAGE_TOML_PATH))
 def test_subsubmodel(config_path):
-    house = pyd_obj_from_config(config_path, HouseWithGarage)
+    house = validate_config(config_path, HouseWithGarage)
     assert house.dimensions == Dimensions(**HOUSE_DIMENSIONS)
     assert house.garage
     assert house.garage.name == GARAGE_NAME
@@ -99,4 +99,4 @@ def test_subsubmodel(config_path):
 @pytest.mark.parametrize("config_path", _test_paths(HOUSE_TOML_BAD_DIMPATH_PATH))
 def test_submodel_toml_badpath(config_path):
     with pytest.raises(FileNotFoundError):
-        pyd_obj_from_config(HOUSE_TOML_BAD_DIMPATH_PATH, House)
+        validate_config(HOUSE_TOML_BAD_DIMPATH_PATH, House)

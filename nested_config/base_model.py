@@ -52,7 +52,7 @@ class BaseModel(pydantic.BaseModel):
         """
         toml_path = Path(toml_path)
         if convert_strpaths:
-            return parsing.pyd_obj_from_config(toml_path, cls)
+            return parsing.validate_config(toml_path, cls)
         # otherwise just load the config as-is
         config_dict = load_config(toml_path)
         return parse_obj(cls, config_dict)

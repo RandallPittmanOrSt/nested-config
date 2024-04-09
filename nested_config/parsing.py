@@ -17,7 +17,7 @@ from nested_config._types import (
 from nested_config.loaders import load_config, set_default_loader
 
 
-def pyd_obj_from_config(
+def validate_config(
     config_path: PathLike,
     model: Type[PydModelT],
     *,
@@ -128,7 +128,7 @@ def _parse_path_str_into_pydmodel(
             f"Config file '{parent_path}' contains a path to another config file"
             f" '{path_str}' that could not be found."
         )
-    return pyd_obj_from_config(path, model)
+    return validate_config(path, model)
 
 
 def _get_optional_ann(annotation):

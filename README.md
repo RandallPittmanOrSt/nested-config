@@ -8,13 +8,13 @@ It also supports validating and JSON-encoding `pathlib.PurePath` on Pydantic 1.8
 
 **nested-config** may be used in your project in two main ways.
 
-1. You may simply call `nested_config.pyd_obj_from_config()` with a config file path and a
+1. You may simply call `nested_config.validate_config()` with a config file path and a
    Pydantic model which may or may not include nested Pydantic models. If there are nested
    models and the config file has string values for those fields, those values are
    interpreted as paths to other config files and those are recursively read into their
-   respective Pydantic models using `pyd_obj_from_config()`. The `default_suffix` kwarg
-   allows for specifying the file suffix (extension) to assume if the config file has no
-   suffix or its suffix is not in the `nested_config.config_dict_loaders` dict.
+   respective Pydantic models using `validate_config()`. The `default_suffix` kwarg allows
+   for specifying the file suffix (extension) to assume if the config file has no suffix
+   or its suffix is not in the `nested_config.config_dict_loaders` dict.
 
    Example including mixed configuration file types and `default_suffix` (Note that PyYAML
    is an extra dependency required for parsing yaml files):
@@ -39,7 +39,7 @@ It also supports validating and JSON-encoding `pathlib.PurePath` on Pydantic 1.8
    import pydantic
    import yaml
 
-   from nested_config import pyd_obj_from_config
+   from nested_config import validate_config
 
    class Dimensions(pydantic.BaseModel):
        length: int
@@ -51,7 +51,7 @@ It also supports validating and JSON-encoding `pathlib.PurePath` on Pydantic 1.8
        dimensions: Dimensions
 
 
-   house = pyd_obj_from_config("house.yaml", House, default_suffix=".toml")
+   house = validate_config("house.yaml", House, default_suffix=".toml")
    house  # House(name='my house', dimensions=Dimensions(length=10, width=20))
    ```
 

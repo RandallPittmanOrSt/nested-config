@@ -33,7 +33,7 @@ def test_basic_house_file():
 
 def test_basic_house_file2():
     """Test creating a House2 with nested_config.obj_from_toml"""
-    house2 = nested_config.pyd_obj_from_config(TOML_PATH, House2)
+    house2 = nested_config.validate_config(TOML_PATH, House2)
     assert house2 == House2(**HOUSE_DATA)
-    house2_yaml = nested_config.pyd_obj_from_config(YAML_PATH, House2)
+    house2_yaml = nested_config.validate_config(YAML_PATH, House2)
     assert house2_yaml == House2(**HOUSE_DATA)
