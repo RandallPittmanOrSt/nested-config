@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.0] - 2024-04-09
+
 ### Changed
 
 - Project renamed from **pydantic-plus** to **nested-config**
@@ -14,9 +16,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Can find paths to other config files and parse them using their respective Pydantic
-  models (this is the main functionality now).
+  models using `validate_config` or `BaseModel` (this is the main functionality now).
 - Pydantic 2.0 compatibility.
-- New simple function to parse any kind of config file, not just TOML.
+- Can validate any config file. TOML and JSON built in, YAML optional, others can be
+  added.
 - Validators for `PurePath` and `PureWindowsPath`
 - Simplify JSON encoder specification to work for all `PurePaths`
 - pytest and mypy checks, checked with GitLab CI/CD
@@ -28,5 +31,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Export `TomlParsingError` from rtoml for downstream exception handling (without needing to explicitly
   import rtoml).
 
-[Unreleased]: https://gitlab.com/osu-nrsg/nested-config/-/compare/v1.1.3...master
+[Unreleased]: https://gitlab.com/osu-nrsg/nested-config/-/compare/v2.0.0...master
+[2.0.0]: https://gitlab.com/osu-nrsg/nested-config/-/compare/v1.1.3...v2.0.0
 [1.1.3]: https://gitlab.com/osu-nrsg/nested-config/-/tags/v1.1.3
