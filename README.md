@@ -51,7 +51,7 @@ It also supports validating and JSON-encoding `pathlib.PurePath` on Pydantic 1.8
        dimensions: Dimensions
 
 
-   house = pyd_obj_from_config("house.yaml", House)
+   house = pyd_obj_from_config("house.yaml", House, default_suffix=".toml")
    house  # House(name='my house', dimensions=Dimensions(length=10, width=20))
    ```
 
