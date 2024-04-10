@@ -476,7 +476,7 @@ name = "pyyaml"
 version = "6.0.1"
 description = "YAML parser and emitter for Python"
 category = "main"
-optional = false
+optional = true
 python-versions = ">=3.6"
 files = [
     {file = "PyYAML-6.0.1-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:d858aa552c999bc8a8d57426ed01e40bef403cd8ccdd0fc5f6f04a00414cac2a"},
@@ -658,4 +658,4 @@ yaml = ["pyyaml"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8"
-content-hash = "ecfeae3f934df19a713f06a4b513d6b928ec1a62ddef5bbef1e10ec0aedd1526"
+content-hash = "1363d530a412d0d773e21a5a7e6fb81147d140d0a03fd0a31de5baa11617683d"
