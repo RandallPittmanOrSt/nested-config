@@ -19,11 +19,6 @@ with contextlib.suppress(ImportError):
 
     YAML_INSTALLED = True
 
-    try:
-        from yaml import CLoader as YAMLLoader  # type: ignore
-    except ImportError:
-        from yaml import Loader as YAMLLoader  # type: ignore
-
 
 class NoLoaderError(Exception):
     def __init__(self, suffix: str):
@@ -57,9 +52,9 @@ config_dict_loaders: Dict[str, ConfigDictLoader] = {
 if YAML_INSTALLED:
 
     def yaml_load(path: PathLike) -> ConfigDict:
-        """Load a YAML config file"""
+        """Load a YAML config file (safely)"""
         with open(path, "r") as fobj:
-            return yaml.load(fobj, Loader=YAMLLoader)
+            return yaml.safe_load(fobj)
 
     config_dict_loaders[".yaml"] = yaml_load
     config_dict_loaders[".yml"] = yaml_load
