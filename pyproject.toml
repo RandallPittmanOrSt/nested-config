@@ -7,6 +7,7 @@ Parse configuration files that include paths to other config files into Pydantic
 """
 authors = ["Randall Pittman <pittmara@oregonstate.edu>"]
 readme = "README.md"
+changes = "CHANGELOG.md"
 license = "MIT"
 repository = "https://gitlab.com/osu-nrsg/nested-config"
 keywords = ["pydantic", "config", "configuration files"]
@@ -26,9 +27,9 @@ classifiers = [
 python = "^3.8"
 pydantic = ">=1.8,<3.0.0"
 single-version = "^1.6.0"
-tomli = {version = "^2.0.1", python = "<3.11"}
-typing-extensions = "^4.11.0"
-pyyaml = {version = "^6.0.1", optional = true}
+tomli = {version = "^2.0.0", python = "<3.11"}
+typing-extensions = "^4.6.0"
+pyyaml = {version = ">=5.0.0,<7.0.0", optional = true}
 
 [tool.poetry.group.dev.dependencies]
 ipython = "^7.22.0"
