@@ -22,6 +22,8 @@ stages:
 
 before_script:
   - pip install poetry
+  # install min versions, possibly updated later
+  - pip install typing_extensions==4.6 pydantic==1.8 tomli==2.0.0 pyyaml==5.1
   - poetry config virtualenvs.create false
   - poetry install
 
@@ -30,7 +32,6 @@ pytest_38_pyd18:
     stage: test
     image: python:3.8
     script:
-        - pip install pydantic==1.8
         - poetry run mypy --always-true PYDANTIC_1 ./
         - poetry run pytest
 
@@ -39,7 +40,6 @@ pytest_312_pyd18:
     stage: test
     image: python:3.12
     script:
-        - pip install pydantic==1.8
         - poetry run mypy --always-true PYDANTIC_1 ./
         - poetry run pytest
 
@@ -53,10 +53,10 @@ pytest_312_pyd110:
         - poetry run pytest
 
 
-pytest_312_pyd2_latest:
+pytest_312_all_latest:
     stage: test
     image: python:3.12
     script:
-        - pip install -U 'pydantic>=2.0,<3.0'
+        - poetry update  # install latest possible versions
         - poetry run mypy --always-false PYDANTIC_1 ./
         - poetry run pytest
