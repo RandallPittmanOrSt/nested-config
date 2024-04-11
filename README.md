@@ -97,31 +97,6 @@ It also supports validating and JSON-encoding `pathlib.PurePath` on Pydantic 1.8
    In this case, if you need to specify a default loader, just use
    `nested_config.set_default_loader(suffix)` before using `BaseModel.from_config()`.
 
-### `PurePath` handling
-
-A bonus feature of **nested-config** is that it provides for validation and JSON encoding
-of `pathlib.PurePath` and its subclasses in Pydantic <2.0 (this is built into Pydantic
-2.0+). All that is needed is an import of `nested_config`. Example:
-
-```python
-from pathlib import PurePosixPath
-
-import nested_config
-import pydantic
-
-
-class RsyncDestination(pydantic.BaseModel):
-    remote_server: str
-    remote_path: PurePosixPath
-
-
-dest = RsyncDestination(remote_server="rsync.example.com", remote_path="/data/incoming")
-
-dest  # RsyncDestination(remote_server='rsync.example.com', remote_path=PurePosixPath('/data/incoming'))
-dest.json()  # '{"remote_server":"rsync.example.com","remote_path":"/data/incoming"}'
-
-```
-
 See [tests](tests) for more detailed use-cases.
 
 ### Included loaders
@@ -149,6 +124,31 @@ nested_config.config_dict_loaders[".dmy"] = dummy_loader
 
 # or add another extension for an existing loader
 nested_config.config_dict_loaders[".jsn"] = nested_config.config_dict_loaders[".json"]
+```
+
+### `PurePath` handling
+
+A bonus feature of **nested-config** is that it provides for validation and JSON encoding
+of `pathlib.PurePath` and its subclasses in Pydantic <2.0 (this is built into Pydantic
+2.0+). All that is needed is an import of `nested_config`. Example:
+
+```python
+from pathlib import PurePosixPath
+
+import nested_config
+import pydantic
+
+
+class RsyncDestination(pydantic.BaseModel):
+    remote_server: str
+    remote_path: PurePosixPath
+
+
+dest = RsyncDestination(remote_server="rsync.example.com", remote_path="/data/incoming")
+
+dest  # RsyncDestination(remote_server='rsync.example.com', remote_path=PurePosixPath('/data/incoming'))
+dest.json()  # '{"remote_server":"rsync.example.com","remote_path":"/data/incoming"}'
+
 ```
 
 ## Pydantic 1.0/2.0 Compatibility
