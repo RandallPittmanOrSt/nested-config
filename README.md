@@ -6,6 +6,9 @@ It also supports validating and JSON-encoding `pathlib.PurePath` on Pydantic 1.8
 
 ## Usage
 
+
+### Config loading
+
 **nested-config** may be used in your project in two main ways.
 
 1. You may simply call `nested_config.validate_config()` with a config file path and a
@@ -94,6 +97,8 @@ It also supports validating and JSON-encoding `pathlib.PurePath` on Pydantic 1.8
    In this case, if you need to specify a default loader, just use
    `nested_config.set_default_loader(suffix)` before using `BaseModel.from_config()`.
 
+### `PurePath` handling
+
 A bonus feature of **nested-config** is that it provides for validation and JSON encoding
 of `pathlib.PurePath` and its subclasses in Pydantic <2.0 (this is built into Pydantic
 2.0+). All that is needed is an import of `nested_config`. Example:
@@ -129,9 +134,6 @@ See [tests](tests) for more detailed use-cases.
 | TOML   | .toml         | `tomllib` (Python 3.11+ stdlib) or `tomli` |
 | YAML   | .yaml, .yml   | `pyyaml` (extra dependency[^yaml-extra])   |
 
-[^yaml-extra]: Install `pyyaml` separately with `pip` or install **nested-config** with
-               `pip install nested-config[yaml]`.
-
 ### Adding loaders
 
 To add a loader for another file extension, simply update the `config_dict_loaders` dict:
@@ -161,6 +163,11 @@ on the version of Pydantic you are using.
 |------------------|-----------------------------|-----------------------------|---------------------------------------------|
 | 2.0+             | `always_false = PYDANTIC_1` | `--always-false PYDANTIC_1` | `defineConstant = { "PYDANTIC_1" = false }` |
 | 1.8-1.10         | `always_true = PYDANTIC_1`  | `--always-true PYDANTIC_1`  | `defineConstant = { "PYDANTIC_1" = true }`  |
+
+## Footnotes
+
+[^yaml-extra]: Install `pyyaml` separately with `pip` or install **nested-config** with
+               `pip install nested-config[yaml]`.
 
 [1]: https://mypy.readthedocs.io/en/latest/config_file.html
 [2]: https://microsoft.github.io/pyright/#/configuration
