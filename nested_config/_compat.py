@@ -19,14 +19,20 @@ class HasAnnotation(Protocol):
 
 
 if PYDANTIC_1:
-    ModelFields: TypeAlias = Dict[str, pydantic.fields.ModelField]
+    FieldInfo_: TypeAlias = pydantic.fields.ModelField
 else:
-    ModelFields: TypeAlias = Dict[str, pydantic.fields.FieldInfo]
+    FieldInfo_: TypeAlias = pydantic.fields.FieldInfo
+ModelFields: TypeAlias = Dict[str, pydantic.fields.FieldInfo]
 
 
-def get_field_annotation(model: Type[pydantic.BaseModel], field_name: str):
+def get_modelfield_annotation(model: Type[pydantic.BaseModel], field_name: str):
     # "annotation" exists in pydantic 1.10, but not 1.8 or 1.9
     field = get_model_fields(model)[field_name]
+    return get_field_annotation(field)
+
+
+def get_field_annotation(field: FieldInfo_):
+    # "annotation" exists in pydantic 1.10, but not 1.8 or 1.9
     if PYDANTIC_1:
         return field.outer_type_
     else:

@@ -10,6 +10,7 @@ import pydantic
 from nested_config import _compat
 from nested_config._types import (
     UNION_TYPES,
+    ConfigDict,
     PathLike,
     PydModelT,
     ispydmodel,
@@ -61,14 +62,20 @@ def validate_config(
     # Get the config dict and the model fields
     config_dict = load_config(config_path)
     # preparse the config (possibly loading nested configs)
-    config_dict = {
+    config_dict = _preparse_config_dict(config_dict, model, config_path)
+    # Create and validate the config object
+    return _compat.parse_obj(model, config_dict)
+
+
+def _preparse_config_dict(
+    config_dict: ConfigDict, model: Type[pydantic.BaseModel], config_path: Path
+):
+    return {
         key: _preparse_config_value(
-            value, _compat.get_field_annotation(model, key), config_path
+            value, _compat.get_modelfield_annotation(model, key), config_path
         )
         for key, value in config_dict.items()
     }
-    # Create and validate the config object
-    return _compat.parse_obj(model, config_dict)
 
 
 def _preparse_config_value(field_value, field_annotation, config_path: Path):
@@ -76,41 +83,46 @@ def _preparse_config_value(field_value, field_annotation, config_path: Path):
     # If the annotation is optional, get the enclosed annotation
     field_annotation = _get_optional_ann(field_annotation)
     # ###
-    # Five cases:
-    # 1. Not a string, list, or dict
-    # 2. String field to be parsed into a model instance
-    # 3. List of strings field where each string is a model instance
-    # 4. Dict with string values where each string is a model instance
-    # 5. A string, list, or dict that doesn't match cases 2-4
+    # N cases:
+    # 1. Config value is not a string, list, or dict
+    # 2. Config value is a dict, model expects a model
+    # 3. Config value is a string, model expects a model
+    # 4. Config value is a list of strings, model expects a list of some type
+    # 5. Config value is a dict with string values, model expects a dict with values of a
+    #    particular model type
+    # 6. A string, list, or dict that doesn't match cases 2-5
     # ###
 
     # 1.
     if not isinstance(field_value, (str, list, dict)):
         return field_value
     # 2.
+    if isinstance(field_value, dict) and ispydmodel(field_annotation, pydantic.BaseModel):
+        return _preparse_config_dict(field_value, field_annotation, config_path)
+    # 3.
     if isinstance(field_value, str) and ispydmodel(field_annotation, pydantic.BaseModel):
         return _parse_path_str_into_pydmodel(field_value, field_annotation, config_path)
-    # 3.
+    # 4.
     if (
         isinstance(field_value, list)
         and all(isinstance(li, str) for li in field_value)
         and (listval_annotation := _get_list_value_ann(field_annotation))
     ):
         return [
-            _parse_path_str_into_pydmodel(li, listval_annotation, config_path)
+            _preparse_config_value(li, listval_annotation, config_path)
             for li in field_value
         ]
-    # 4.
+    # 5.
     if (
         isinstance(field_value, dict)
         and all(isinstance(vi, str) for vi in field_value.values())
         and (dictval_annotation := _get_dict_value_ann(field_annotation))
     ):
         return {
-            key: _parse_path_str_into_pydmodel(value, dictval_annotation, config_path)
+            key: _preparse_config_value(value, dictval_annotation, config_path)
             for key, value in field_value.items()
         }
-    # 5.
+    # 6.
     return field_value
 
 
@@ -135,38 +147,25 @@ def _get_optional_ann(annotation):
     """Convert a possibly Optional annotation to its underlying annotation"""
     annotation_origin = typing.get_origin(annotation)
     annotation_args = typing.get_args(annotation)
-    if (
-        annotation_origin in UNION_TYPES
-        and ispydmodel(annotation_args[0], pydantic.BaseModel)
-        and annotation_args[1] is type(None)
-    ):
+    if annotation_origin in UNION_TYPES and annotation_args[1] is type(None):
         return annotation_args[0]
     return annotation
 
 
 def _get_list_value_ann(annotation):
-    """If annotation is a List annotation, return the internal annotation if and only if
-    it is a (maybe optional) Pydantic model, otherwise return None."""
+    """Get the internal annotation of a typed list, if any. Otherwise return None."""
     annotation_origin = typing.get_origin(annotation)
     annotation_args = typing.get_args(annotation)
-    if (
-        annotation_origin is list
-        and len(annotation_args) > 0
-        and ispydmodel(annotation_args[0], pydantic.BaseModel)
-    ):
+    if annotation_origin is list and len(annotation_args) > 0:
         return annotation_args[0]
     return None
 
 
 def _get_dict_value_ann(annotation):
-    """If annotation is a Dict annotation with arguments, return the value annotation if
-    and only if it is a (maybe optional) Pydantic model, otherwise return None."""
+    """Get the internal annotation of a dict's value type, if any. Otherwise return
+    None."""
     annotation_origin = typing.get_origin(annotation)
     annotation_args = typing.get_args(annotation)
-    if (
-        annotation_origin is dict
-        and len(annotation_args) > 1
-        and ispydmodel(annotation_args[1], pydantic.BaseModel)
-    ):
+    if annotation_origin is dict and len(annotation_args) > 1:
         return annotation_args[1]
     return None
