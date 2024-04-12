@@ -6,6 +6,9 @@ It also supports validating and JSON-encoding `pathlib.PurePath` on Pydantic 1.8
 
 ## Usage
 
+
+### Config loading
+
 **nested-config** may be used in your project in two main ways.
 
 1. You may simply call `nested_config.validate_config()` with a config file path and a
@@ -94,6 +97,37 @@ It also supports validating and JSON-encoding `pathlib.PurePath` on Pydantic 1.8
    In this case, if you need to specify a default loader, just use
    `nested_config.set_default_loader(suffix)` before using `BaseModel.from_config()`.
 
+See [tests](tests) for more detailed use-cases.
+
+### Included loaders
+
+**nested-config** automatically loads the following files based on extension:
+
+| Format | Extensions(s) | Library                                    |
+| ------ | ------------- | ------------------------------------------ |
+| JSON   | .json         | `json` (stdlib)                            |
+| TOML   | .toml         | `tomllib` (Python 3.11+ stdlib) or `tomli` |
+| YAML   | .yaml, .yml   | `pyyaml` (extra dependency[^yaml-extra])   |
+
+### Adding loaders
+
+To add a loader for another file extension, simply update the `config_dict_loaders` dict:
+
+```python
+import nested_config
+from nested_config import ConfigDict  # alias for dict[str, Any]
+
+def dummy_loader(config_path: Path) -> ConfigDict:
+    return {"a": 1, "b": 2}
+
+nested_config.config_dict_loaders[".dmy"] = dummy_loader
+
+# or add another extension for an existing loader
+nested_config.config_dict_loaders[".jsn"] = nested_config.config_dict_loaders[".json"]
+```
+
+### `PurePath` handling
+
 A bonus feature of **nested-config** is that it provides for validation and JSON encoding
 of `pathlib.PurePath` and its subclasses in Pydantic <2.0 (this is built into Pydantic
 2.0+). All that is needed is an import of `nested_config`. Example:
@@ -117,38 +151,6 @@ dest.json()  # '{"remote_server":"rsync.example.com","remote_path":"/data/incomi
 
 ```
 
-See [tests](tests) for more detailed use-cases.
-
-### Included loaders
-
-**nested-config** automatically loads the following files based on extension:
-
-| Format | Extensions(s) | Library                                    |
-| ------ | ------------- | ------------------------------------------ |
-| JSON   | .json         | `json` (stdlib)                            |
-| TOML   | .toml         | `tomllib` (Python 3.11+ stdlib) or `tomli` |
-| YAML   | .yaml, .yml   | `pyyaml` (extra dependency[^yaml-extra])   |
-
-[^yaml-extra]: Install `pyyaml` separately with `pip` or install **nested-config** with
-               `pip install nested-config[yaml]`.
-
-### Adding loaders
-
-To add a loader for another file extension, simply update the `config_dict_loaders` dict:
-
-```python
-import nested_config
-from nested_config import ConfigDict  # alias for dict[str, Any]
-
-def dummy_loader(config_path: Path) -> ConfigDict:
-    return {"a": 1, "b": 2}
-
-nested_config.config_dict_loaders[".dmy"] = dummy_loader
-
-# or add another extension for an existing loader
-nested_config.config_dict_loaders[".jsn"] = nested_config.config_dict_loaders[".json"]
-```
-
 ## Pydantic 1.0/2.0 Compatibility
 
 nested-config is runtime compatible with Pydantic 1.8+ and Pydantic 2.0.
@@ -161,6 +163,11 @@ on the version of Pydantic you are using.
 |------------------|-----------------------------|-----------------------------|---------------------------------------------|
 | 2.0+             | `always_false = PYDANTIC_1` | `--always-false PYDANTIC_1` | `defineConstant = { "PYDANTIC_1" = false }` |
 | 1.8-1.10         | `always_true = PYDANTIC_1`  | `--always-true PYDANTIC_1`  | `defineConstant = { "PYDANTIC_1" = true }`  |
+
+## Footnotes
+
+[^yaml-extra]: Install `pyyaml` separately with `pip` or install **nested-config** with
+               `pip install nested-config[yaml]`.
 
 [1]: https://mypy.readthedocs.io/en/latest/config_file.html
 [2]: https://microsoft.github.io/pyright/#/configuration
