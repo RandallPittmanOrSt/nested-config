@@ -87,9 +87,9 @@ def _preparse_config_value(field_value, field_annotation, config_path: Path):
     # 1. Config value is not a string, list, or dict
     # 2. Config value is a dict, model expects a model
     # 3. Config value is a string, model expects a model
-    # 4. Config value is a list of strings, model expects a list of some type
-    # 5. Config value is a dict with string values, model expects a dict with values of a
-    #    particular model type
+    # 4. Config value is a list, model expects a list of some type
+    # 5. Config value is a dict, model expects a dict with values of a particular model
+    #    type
     # 6. A string, list, or dict that doesn't match cases 2-5
     # ###
 
@@ -105,7 +105,6 @@ def _preparse_config_value(field_value, field_annotation, config_path: Path):
     # 4.
     if (
         isinstance(field_value, list)
-        and all(isinstance(li, str) for li in field_value)
         and (listval_annotation := _get_list_value_ann(field_annotation))
     ):
         return [
@@ -115,7 +114,6 @@ def _preparse_config_value(field_value, field_annotation, config_path: Path):
     # 5.
     if (
         isinstance(field_value, dict)
-        and all(isinstance(vi, str) for vi in field_value.values())
         and (dictval_annotation := _get_dict_value_ann(field_annotation))
     ):
         return {
