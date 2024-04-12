@@ -20,7 +20,8 @@ def _path_validator(v: Any, type: Type[PathT]) -> PathT:
     try:
         return type(v)
     except TypeError:
-        raise pydantic.errors.PathError
+        # n.b. this error only exists in Pydantic < 2.0
+        raise pydantic.errors.PathError from None
 
 
 def pure_path_validator(v: Any):
