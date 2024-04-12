@@ -103,18 +103,16 @@ def _preparse_config_value(field_value, field_annotation, config_path: Path):
     if isinstance(field_value, str) and ispydmodel(field_annotation, pydantic.BaseModel):
         return _parse_path_str_into_pydmodel(field_value, field_annotation, config_path)
     # 4.
-    if (
-        isinstance(field_value, list)
-        and (listval_annotation := _get_list_value_ann(field_annotation))
+    if isinstance(field_value, list) and (
+        listval_annotation := _get_list_value_ann(field_annotation)
     ):
         return [
             _preparse_config_value(li, listval_annotation, config_path)
             for li in field_value
         ]
     # 5.
-    if (
-        isinstance(field_value, dict)
-        and (dictval_annotation := _get_dict_value_ann(field_annotation))
+    if isinstance(field_value, dict) and (
+        dictval_annotation := _get_dict_value_ann(field_annotation)
     ):
         return {
             key: _preparse_config_value(value, dictval_annotation, config_path)
