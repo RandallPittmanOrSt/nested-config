@@ -22,7 +22,7 @@ if PYDANTIC_1:
     FieldInfo_: TypeAlias = pydantic.fields.ModelField
 else:
     FieldInfo_: TypeAlias = pydantic.fields.FieldInfo
-ModelFields: TypeAlias = Dict[str, pydantic.fields.FieldInfo]
+ModelFields: TypeAlias = Dict[str, FieldInfo_]
 
 
 def get_modelfield_annotation(model: Type[pydantic.BaseModel], field_name: str):
