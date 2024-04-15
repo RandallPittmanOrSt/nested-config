@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 - Fix typing issue regression for Pydantic < 2.0 introduced in last release
+- Move package to `src` directory
 
 ## [2.0.2] - 2024-04-12
 

@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "nested-config"
-version = "2.0.2"
+version = "2.0.3a0"
 description = """\
 Parse configuration files that include paths to other config files into Pydantic model\
  instances. Also support `pathlib.PurePath` on Pydantic 1.8+.\
