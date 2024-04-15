@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.3] - 2024-04-15
+
 - Fix typing issue regression for Pydantic < 2.0 introduced in last release
 - Move package to `src` directory
 
@@ -47,7 +49,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Export `TomlParsingError` from rtoml for downstream exception handling (without needing to explicitly
   import rtoml).
 
-[Unreleased]: https://gitlab.com/osu-nrsg/nested-config/-/compare/v2.0.2...master
+[Unreleased]: https://gitlab.com/osu-nrsg/nested-config/-/compare/v2.0.3...master
+[2.0.3]: https://gitlab.com/osu-nrsg/nested-config/-/compare/v2.0.2...v2.0.3
 [2.0.2]: https://gitlab.com/osu-nrsg/nested-config/-/compare/v2.0.1...v2.0.2
 [2.0.1]: https://gitlab.com/osu-nrsg/nested-config/-/compare/v2.0.0...v2.0.1
 [2.0.0]: https://gitlab.com/osu-nrsg/nested-config/-/compare/v1.1.3...v2.0.0
