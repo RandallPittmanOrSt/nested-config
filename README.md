@@ -6,7 +6,6 @@ It also supports validating and JSON-encoding `pathlib.PurePath` on Pydantic 1.8
 
 ## Usage
 
-
 ### Config loading
 
 **nested-config** may be used in your project in two main ways.
@@ -97,7 +96,8 @@ It also supports validating and JSON-encoding `pathlib.PurePath` on Pydantic 1.8
    In this case, if you need to specify a default loader, just use
    `nested_config.set_default_loader(suffix)` before using `BaseModel.from_config()`.
 
-See [tests](tests) for more detailed use-cases.
+See [tests](https://gitlab.com/osu-nrsg/nested-config/-/tree/master/tests) for more
+detailed use-cases.
 
 ### Included loaders
 
