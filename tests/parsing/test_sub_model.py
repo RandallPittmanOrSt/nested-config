@@ -3,7 +3,6 @@ from typing import Dict, List, Optional
 
 import pydantic
 import pytest
-
 from nested_config import validate_config
 
 TOML_DIR = Path(__file__).parent / "toml_files"
