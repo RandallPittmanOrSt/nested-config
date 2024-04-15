@@ -1,0 +1,20 @@
+name = "Beverly Hills"
+
+[[houses]]
+name = "Mom's house"
+dimensions = "subdir/house_dimensions.toml"
+garage = "garage.toml"
+
+[[houses]]
+name = "my house"
+
+[houses.garage]
+name = "my garage"
+dimensions = "subdir/garage_dimensions.toml"
+
+[houses.dimensions]
+# manually spec'd submodel
+length = 50
+width = 30
+height = 20
+

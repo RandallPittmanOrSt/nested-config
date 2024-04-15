@@ -14,6 +14,7 @@ HOUSE_TOML_BAD_DIMPATH_PATH = TOML_DIR / "house_bad_dimpath.toml"
 HOUSE_TOML_LISTDIM_PATH = TOML_DIR / "house_listdim.toml"
 HOUSE_TOML_DICTDIM_PATH = TOML_DIR / "house_dictdim.toml"
 HOUSE_WITH_GARAGE_TOML_PATH = TOML_DIR / "house_with_garage.toml"
+NEIGHBORHOOD_TOML_PATH = TOML_DIR / "neighborhood.toml"
 
 HOUSE_DIMENSIONS = {"length": 40, "width": 20, "height": 10}
 GARAGE_DIMENSIONS = {"length": 15, "width": 15, "height": 8}
@@ -55,10 +56,13 @@ class Garage(pydantic.BaseModel):
     dimensions: Dimensions
 
 
-class HouseWithGarage(pydantic.BaseModel):
-    name: str
-    dimensions: Dimensions
+class HouseWithGarage(House):
     garage: Optional[Garage]
+
+
+class Neighborhood(pydantic.BaseModel):
+    name: str
+    houses: List[HouseWithGarage]
 
 
 @pytest.mark.parametrize("config_path", _test_paths(HOUSE_TOML_PATH))
@@ -100,3 +104,7 @@ def test_subsubmodel(config_path):
 def test_submodel_toml_badpath(config_path):
     with pytest.raises(FileNotFoundError):
         validate_config(HOUSE_TOML_BAD_DIMPATH_PATH, House)
+
+
+def test_neighborhood():
+    validate_config(NEIGHBORHOOD_TOML_PATH, Neighborhood)
