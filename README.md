@@ -97,7 +97,9 @@ It also supports validating and JSON-encoding `pathlib.PurePath` on Pydantic 1.8
    `nested_config.set_default_loader(suffix)` before using `BaseModel.from_config()`.
 
 See [tests](https://gitlab.com/osu-nrsg/nested-config/-/tree/master/tests) for more
-detailed use-cases.
+detailed use-cases, such as where the root pydantic model contains lists or dicts of other
+models and when those may be included in the root config file or specified as paths to
+sub-config files.
 
 ### Included loaders
 
