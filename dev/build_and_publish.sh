@@ -22,4 +22,9 @@ REPO_UPPER="$(echo "$REPO" | tr '[:lower:]' '[:upper:]')"
 declare -n REPO_TOKEN_ENVVAR=POETRY_PYPI_TOKEN_${REPO_UPPER}
 [ -z "$REPO_TOKEN_ENVVAR" ] && die "${!REPO_TOKEN_ENVVAR} was apparently not set in the .env file"
 poetry build || die "Problem with build step"
-poetry publish --repository "$REPO"
+if [ "$REPO" = "pypi" ]; then
+  poetry publish
+else
+  poetry publish --repository "$REPO"
+fi
+
