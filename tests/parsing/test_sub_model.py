@@ -105,5 +105,31 @@ def test_submodel_toml_badpath(config_path):
         validate_config(HOUSE_TOML_BAD_DIMPATH_PATH, House)
 
 
+NEIGHBORHOOD = {
+    "name": "Beverly Hills",
+    "houses": [
+        {
+            "name": "Mom's house",
+            "dimensions": {"length": 40, "width": 20, "height": 10},
+            "garage": {
+                "name": "way out back",
+                "dimensions": {"length": 15, "width": 15, "height": 8},
+            },
+        },
+        {
+            "name": "my house",
+            "dimensions": {"length": 50, "width": 30, "height": 20},
+            "garage": {
+                "name": "my garage",
+                "dimensions": {"length": 15, "width": 15, "height": 8},
+            },
+        },
+    ],
+}
+
+
 def test_neighborhood():
-    validate_config(NEIGHBORHOOD_TOML_PATH, Neighborhood)
+    """Complicated case with some nested models manually defined, some defined by a path"""
+    assert validate_config(NEIGHBORHOOD_TOML_PATH, Neighborhood) == Neighborhood(
+        **NEIGHBORHOOD
+    )
