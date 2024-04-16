@@ -1,11 +1,11 @@
 """parsing.py - Functions to parse config files (e.g. TOML) into Pydantic model instances,
 possibly with nested models specified by string paths."""
 
+import functools
+import inspect
 import typing
 from pathlib import Path
-from typing import Any, Optional, Type
-
-import pydantic
+from typing import Any, Dict, Optional, Type
 
 from nested_config import _pydantic
 from nested_config._types import (
@@ -13,7 +13,6 @@ from nested_config._types import (
     ConfigDict,
     PathLike,
     PydModelT,
-    ispydmodel,
 )
 from nested_config.loaders import load_config
 
@@ -62,7 +61,7 @@ def validate_config(
 
 def expand_config(
     config_path: PathLike,
-    model: Type[pydantic.BaseModel],
+    model: type,
     *,
     default_suffix: Optional[str] = None,
 ) -> ConfigDict:
@@ -70,23 +69,68 @@ def expand_config(
     return expander.expand(config_path, model)
 
 
+class ConfigExpansionError(RuntimeError):
+    pass
+
+
+@functools.lru_cache
+def get_model_annotations(model: type) -> Dict[str, Any]:
+    """Get the aggregated annotations of all members of a model"""
+    # sourcery skip: dict-assign-update-to-union
+    annotations: Dict[str, Any] = {}
+    for cls in inspect.getmro(model)[::-1]:
+        annotations.update(inspect.get_annotations(cls))
+    return annotations
+
+
+def get_modelfield_annotation(model: type, field_name: str):
+    """Try to get the field annotation for some type, e.g. a dataclass or Pydantic
+    model
+
+    Inputs
+    ------
+    model
+        The template class from which we want field annotations.
+    field_name
+        Name of the field to get
+
+    Returns
+    -------
+    The type annotation of the chosen field
+
+    Raises
+    ------
+    ConfigExpansionError
+        There is no field of that name in the specified model
+    """
+
+    try:
+        return get_model_annotations(model)[field_name]
+    except KeyError:
+        raise ConfigExpansionError(
+            f"Model type {model} does not have a field named {field_name}"
+        ) from None
+
+
+def is_expandable(val: Any) -> bool:
+    return hasattr(val, "__annotations__")
+
+
 class ConfigExpander:
     def __init__(self, *, default_suffix: Optional[str] = None):
         self.default_suffix = default_suffix
 
-    def expand(self, config_path: PathLike, model: Type[pydantic.BaseModel]):
+    def expand(self, config_path: PathLike, model: type) -> ConfigDict:
         config_path = Path(config_path)
-        # Get the config dict and the model fields
-        config_dict = load_config(config_path, default_suffix=self.default_suffix)
-        # preparse the config (possibly loading nested configs)
+        config_dict = load_config(config_path, self.default_suffix)
         return self._preparse_config_dict(config_dict, model, config_path)
 
     def _preparse_config_dict(
-        self, config_dict: ConfigDict, model: Type[pydantic.BaseModel], config_path: Path
+        self, config_dict: ConfigDict, model: type, config_path: Path
     ):
         return {
             key: self._preparse_config_value(
-                value, _pydantic.get_modelfield_annotation(model, key), config_path
+                value, get_modelfield_annotation(model, key), config_path
             )
             for key, value in config_dict.items()
         }
@@ -94,7 +138,8 @@ class ConfigExpander:
     def _preparse_config_value(
         self, field_value: str, field_annotation: Any, config_path: Path
     ):
-        """Check if a model field contains a path to another model and parse it accordingly"""
+        """Check if a model field contains a path to another model and parse it
+        accordingly"""
         # If the annotation is optional, get the enclosed annotation
         field_annotation = _get_optional_ann(field_annotation)
         # ###
@@ -111,15 +156,11 @@ class ConfigExpander:
         if not isinstance(field_value, (str, list, dict)):
             return field_value
         # 2.
-        if isinstance(field_value, dict) and ispydmodel(
-            field_annotation, pydantic.BaseModel
-        ):
+        if isinstance(field_value, dict) and is_expandable(field_annotation):
             return self._preparse_config_dict(field_value, field_annotation, config_path)
         # 3.
-        if isinstance(field_value, str) and ispydmodel(
-            field_annotation, pydantic.BaseModel
-        ):
-            return self._parse_path_str_into_pydmodel(
+        if isinstance(field_value, str) and is_expandable(field_annotation):
+            return self._expand_path_str_into_model(
                 field_value, field_annotation, config_path
             )
         # 4.
@@ -141,11 +182,12 @@ class ConfigExpander:
         # 6.
         return field_value
 
-    def _parse_path_str_into_pydmodel(
-        self, path_str: str, model: Type[pydantic.BaseModel], parent_path: Path
+    def _expand_path_str_into_model(
+        self, path_str: str, model: type, parent_path: Path
     ) -> ConfigDict:
         """Convert a path string to a path (possibly relative to a parent config path) and
-        create an instance of a Pydantic model"""
+        use expand() to load that config file, possibly expanding further sub-config
+        files based on the model type."""
         path = Path(path_str)
         if not path.is_absolute():
             # Assume it's relative to the parent config path

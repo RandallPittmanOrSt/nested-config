@@ -1,7 +1,7 @@
 from typing import Optional, Type
 
 import pydantic
-from nested_config.expand import ispydmodel
+from nested_config import ispydmodel
 
 
 class MyModel(pydantic.BaseModel):
