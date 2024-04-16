@@ -70,10 +70,11 @@ def validate_config(
     """
     config_dict = expand_config(config_path, model, default_suffix=default_suffix)
     # Create and validate the config object
-    return parse_obj(model, config_dict)
+    return model_validate(model, config_dict)
 
 
-def parse_obj(model: Type[PydModelT], obj: Any) -> PydModelT:
+def model_validate(model: Type[PydModelT], obj: Any) -> PydModelT:
+    """Pydantic 1/2 compatibility wrapper for model.model_validate"""
     if PYDANTIC_1:
         return model.parse_obj(obj)
     else:

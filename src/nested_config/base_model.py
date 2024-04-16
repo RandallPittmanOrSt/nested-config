@@ -54,4 +54,4 @@ class BaseModel(pydantic.BaseModel):
             return validate_config(toml_path, cls)
         # otherwise just load the config as-is
         config_dict = load_config(toml_path)
-        return parse_obj(cls, config_dict)
+        return model_validate(cls, config_dict)
