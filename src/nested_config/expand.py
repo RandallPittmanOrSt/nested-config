@@ -35,7 +35,7 @@ def get_model_annotations(model: type) -> Dict[str, Any]:
     # sourcery skip: dict-assign-update-to-union
     annotations: Dict[str, Any] = {}
     for cls in inspect.getmro(model)[::-1]:
-        annotations.update(inspect.get_annotations(cls))
+        annotations.update(cls.__dict__.get("__annotations__", {}))
     return annotations
 
 
