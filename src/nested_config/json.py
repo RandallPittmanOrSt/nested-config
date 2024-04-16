@@ -4,7 +4,7 @@ from pathlib import PurePath
 
 import pydantic.json
 
-from nested_config._pyd_compat import PYDANTIC_1
+from nested_config._pydantic import PYDANTIC_1
 
 
 def patch_pydantic_json_encoders():
