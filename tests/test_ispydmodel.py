@@ -1,7 +1,6 @@
 from typing import Optional, Type
 
 import pydantic
-
 from nested_config.expand import ispydmodel
 
 

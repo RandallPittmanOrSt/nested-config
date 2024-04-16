@@ -6,7 +6,6 @@ import os
 from pathlib import PurePath, PurePosixPath, PureWindowsPath
 
 import pydantic
-
 from nested_config._pydantic import dump_json, parse_obj
 
 PURE_POSIX_PATH = "/some/pure/path"
