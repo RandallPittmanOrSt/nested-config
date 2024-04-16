@@ -23,7 +23,7 @@ from nested_config.loaders import (
     config_dict_loaders,
     set_default_loader,
 )
-from nested_config.parsing import ispydmodel, validate_config
+from nested_config.expand import ispydmodel, validate_config
 from nested_config.version import __version__
 
 # We always patch the validators, but in the future this may be made optional

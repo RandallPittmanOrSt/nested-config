@@ -10,7 +10,7 @@ from typing import Type
 
 import pydantic
 
-from nested_config import parsing
+from nested_config import expand
 from nested_config._pydantic import parse_obj
 from nested_config._types import PathLike, PydModelT
 from nested_config.loaders import load_config
@@ -52,7 +52,7 @@ class BaseModel(pydantic.BaseModel):
         """
         toml_path = Path(toml_path)
         if convert_strpaths:
-            return parsing.validate_config(toml_path, cls)
+            return expand.validate_config(toml_path, cls)
         # otherwise just load the config as-is
         config_dict = load_config(toml_path)
         return parse_obj(cls, config_dict)
