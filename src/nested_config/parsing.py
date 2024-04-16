@@ -55,6 +55,17 @@ def validate_config(
         The data fields or types in the file do not match the model.
 
     """
+    config_dict = expand_config(config_path, model, default_suffix=default_suffix)
+    # Create and validate the config object
+    return _pyd_compat.parse_obj(model, config_dict)
+
+
+def expand_config(
+    config_path: PathLike,
+    model: Type[pydantic.BaseModel],
+    *,
+    default_suffix: Optional[str] = None,
+) -> ConfigDict:
     if default_suffix:
         set_default_loader(default_suffix)
     # Input arg coercion
@@ -62,9 +73,7 @@ def validate_config(
     # Get the config dict and the model fields
     config_dict = load_config(config_path)
     # preparse the config (possibly loading nested configs)
-    config_dict = _preparse_config_dict(config_dict, model, config_path)
-    # Create and validate the config object
-    return _pyd_compat.parse_obj(model, config_dict)
+    return _preparse_config_dict(config_dict, model, config_path)
 
 
 def _preparse_config_dict(
@@ -88,8 +97,7 @@ def _preparse_config_value(field_value, field_annotation, config_path: Path):
     # 2. Config value is a dict, model expects a model
     # 3. Config value is a string, model expects a model
     # 4. Config value is a list, model expects a list of some type
-    # 5. Config value is a dict, model expects a dict with values of a particular model
-    #    type
+    # 5. Config value is a dict, model expects a dict with values of some type
     # 6. A string, list, or dict that doesn't match cases 2-5
     # ###
 
@@ -123,8 +131,8 @@ def _preparse_config_value(field_value, field_annotation, config_path: Path):
 
 
 def _parse_path_str_into_pydmodel(
-    path_str: str, model: Type[PydModelT], parent_path: Path
-) -> PydModelT:
+    path_str: str, model: Type[pydantic.BaseModel], parent_path: Path
+) -> ConfigDict:
     """Convert a path string to a path (possibly relative to a parent config path) and
     create an instance of a Pydantic model"""
     path = Path(path_str)
@@ -136,7 +144,7 @@ def _parse_path_str_into_pydmodel(
             f"Config file '{parent_path}' contains a path to another config file"
             f" '{path_str}' that could not be found."
         )
-    return validate_config(path, model)
+    return expand_config(path, model)
 
 
 def _get_optional_ann(annotation):
