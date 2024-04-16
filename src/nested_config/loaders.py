@@ -21,8 +21,11 @@ with contextlib.suppress(ImportError):
 
 
 class NoLoaderError(Exception):
-    def __init__(self, suffix: str):
-        super().__init__(f"There is no loader for file extension {suffix}")
+    def __init__(self, suffix: str, default_suffix: Optional[str]):
+        msg_tail = ""
+        if default_suffix:
+            msg_tail = f" nor a loader for default suffix {default_suffix}"
+        super().__init__(f"There is no loader for file extension {suffix}{msg_tail}.")
 
 
 class ConfigLoaderError(Exception):
@@ -60,34 +63,20 @@ if YAML_INSTALLED:
     config_dict_loaders[".yml"] = yaml_load
 
 
-def _get_loader(config_path: Path):
+def _get_loader(config_path: Path, default_suffix: Optional[str] = None):
     """Get the loader for the specified suffix, or a loader from default suffix"""
     try:
         try:
             return config_dict_loaders[config_path.suffix]
         except KeyError:
-            if default_loader := _get_default_loader():
-                return default_loader
+            if default_suffix:
+                return config_dict_loaders[default_suffix]
             raise
     except KeyError:
-        raise NoLoaderError(config_path.suffix) from None
+        raise NoLoaderError(config_path.suffix, default_suffix) from None
 
 
-def _get_default_loader() -> Optional[ConfigDictLoader]:
-    try:
-        return config_dict_loaders["DEFAULT"]
-    except KeyError:
-        return None
-
-
-def set_default_loader(default_suffix: str):
-    try:
-        config_dict_loaders["DEFAULT"] = config_dict_loaders[default_suffix]
-    except KeyError:
-        raise NoLoaderError(default_suffix) from None
-
-
-def load_config(config_path: Path) -> ConfigDict:
+def load_config(config_path: Path, default_suffix: Optional[str] = None) -> ConfigDict:
     """Select a loader based on the suffix (extension) of the config file and try to load
     the config using that loader. E.g. for .toml, use the TOML loader.
 
@@ -108,7 +97,7 @@ def load_config(config_path: Path) -> ConfigDict:
     ConfigLoaderError
         There was an error running the loader (e.g. in tomllib or yaml or json)
     """
-    loader = _get_loader(config_path)
+    loader = _get_loader(config_path, default_suffix)
     try:
         return loader(config_path)
     except Exception as ex:

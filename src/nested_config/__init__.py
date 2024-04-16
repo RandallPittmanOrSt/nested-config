@@ -18,12 +18,11 @@ from nested_config._pydantic import (
 )
 from nested_config._types import ispydmodel
 from nested_config.base_model import BaseModel
-from nested_config.expand import validate_config
+from nested_config.expand import expand_config, validate_config
 from nested_config.loaders import (
     ConfigLoaderError,
     NoLoaderError,
     config_dict_loaders,
-    set_default_loader,
 )
 from nested_config.version import __version__
 
