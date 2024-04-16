@@ -21,19 +21,19 @@ class BaseModel(pydantic.BaseModel):
 
     @classmethod
     def from_config(
-        cls: Type[PydModelT], toml_path: PathLike, convert_strpaths=True
+        cls: Type[PydModelT], config_path: PathLike, convert_strpaths=True
     ) -> PydModelT:
-        """Create Pydantic model from a TOML file
+        """Create Pydantic model from a config file
 
         Parameters
         ----------
-        toml_path
-            Path to the TOML file
+        config_path
+            Path to the config file
         convert_strpaths
-            If True, every string value [a] in the dict from the parsed TOML file that
+            If True, every string value [a] in the dict from the parsed config file that
             corresponds to a Pydantic model field [b] in the base model will be
-            interpreted as a path to another TOML file and an attempt will be made to
-            parse that TOML file [a] and make it into an object of that [b] model type,
+            interpreted as a path to another config file and an attempt will be made to
+            parse that config file [a] and make it into an object of that [b] model type,
             and so on, recursively.
 
         Returns
@@ -49,9 +49,9 @@ class BaseModel(pydantic.BaseModel):
         pydantic.ValidationError
             The data fields or types in the file do not match the model.
         """
-        toml_path = Path(toml_path)
+        config_path = Path(config_path)
         if convert_strpaths:
-            return validate_config(toml_path, cls)
+            return validate_config(config_path, cls)
         # otherwise just load the config as-is
-        config_dict = load_config(toml_path)
+        config_dict = load_config(config_path)
         return model_validate(cls, config_dict)
