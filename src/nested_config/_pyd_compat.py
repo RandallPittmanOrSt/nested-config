@@ -1,4 +1,4 @@
-"""_compat.py - Functions and types to assist with Pydantic 1/2 compatibility"""
+"""_pyd_compat.py - Functions and types to assist with Pydantic 1/2 compatibility"""
 
 from typing import Any, Dict, Optional, Protocol, Type
 

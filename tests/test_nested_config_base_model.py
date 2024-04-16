@@ -6,7 +6,7 @@ import os
 from pathlib import PurePath, PurePosixPath, PureWindowsPath
 
 import nested_config
-from nested_config._compat import dump_json, parse_obj
+from nested_config._pyd_compat import dump_json, parse_obj
 
 PURE_POSIX_PATH = "/some/pure/path"
 PURE_WINDOWS_PATH = "C:\\some\\pure\\path"

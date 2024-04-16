@@ -7,7 +7,7 @@ from typing import Optional, Type
 
 import pydantic
 
-from nested_config import _compat
+from nested_config import _pyd_compat
 from nested_config._types import (
     UNION_TYPES,
     ConfigDict,
@@ -64,7 +64,7 @@ def validate_config(
     # preparse the config (possibly loading nested configs)
     config_dict = _preparse_config_dict(config_dict, model, config_path)
     # Create and validate the config object
-    return _compat.parse_obj(model, config_dict)
+    return _pyd_compat.parse_obj(model, config_dict)
 
 
 def _preparse_config_dict(
@@ -72,7 +72,7 @@ def _preparse_config_dict(
 ):
     return {
         key: _preparse_config_value(
-            value, _compat.get_modelfield_annotation(model, key), config_path
+            value, _pyd_compat.get_modelfield_annotation(model, key), config_path
         )
         for key, value in config_dict.items()
     }

@@ -11,7 +11,7 @@ from typing import Type
 import pydantic
 
 from nested_config import parsing
-from nested_config._compat import parse_obj
+from nested_config._pyd_compat import parse_obj
 from nested_config._types import PathLike, PydModelT
 from nested_config.loaders import load_config
 
