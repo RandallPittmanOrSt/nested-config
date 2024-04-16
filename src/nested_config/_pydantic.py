@@ -82,7 +82,7 @@ def model_validate(model: Type[PydModelT], obj: Any) -> PydModelT:
 
 
 def dump_json(model: pydantic.BaseModel) -> str:
-    """Compatibility of json dump function for testing"""
+    """Pydantic 1/2 compatibility wrapper for model.model_dump_json"""
     if PYDANTIC_1:
         return model.json()
     else:
@@ -90,13 +90,14 @@ def dump_json(model: pydantic.BaseModel) -> str:
 
 
 def patch_pydantic_json_encoders():
+    """Add PurePath encoder for JSON in Pydantic < 2.0"""
     if PYDANTIC_1:
         # These are already in pydantic 2+
         pydantic.json.ENCODERS_BY_TYPE[PurePath] = str
 
 
 def _path_validator(v: Any, type: Type[PathT]) -> PathT:
-    """Attempt to convert a value to a PurePosixPath"""
+    """Attempt to convert a value to a PurePath"""
     if isinstance(v, type):
         return v
     try:
@@ -119,15 +120,13 @@ def pure_windows_path_validator(v: Any):
 
 
 def patch_pydantic_validators():
+    """Add Pure*Path validators to Pydantic < 2.0"""
     if PYDANTIC_1:
         # These are already included in pydantic 2+
         pydantic.validators._VALIDATORS.extend(
             [
                 (PurePosixPath, [pure_posix_path_validator]),
                 (PureWindowsPath, [pure_windows_path_validator]),
-                (
-                    PurePath,
-                    [pure_path_validator],
-                ),  # last because others are more specific
+                (PurePath, [pure_path_validator]),  # last b/c others are more specific
             ]
         )
