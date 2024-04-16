@@ -2,14 +2,12 @@
 
 import sys
 from pathlib import Path
-from typing import Any, Callable, Dict, Type, TypeVar, Union
+from typing import Any, Callable, Dict, Union
 
-import pydantic
-from typing_extensions import TypeAlias, TypeGuard
+from typing_extensions import TypeAlias
 
 ConfigDict: TypeAlias = Dict[str, Any]
 PathLike: TypeAlias = Union[Path, str]
-PydModelT = TypeVar("PydModelT", bound=pydantic.BaseModel)
 ConfigDictLoader: TypeAlias = Callable[[Path], ConfigDict]
 
 
@@ -19,8 +17,3 @@ if sys.version_info >= (3, 10):
     UNION_TYPES = [Union, UnionType]
 else:
     UNION_TYPES = [Union]
-
-
-def ispydmodel(klass, cls: Type[PydModelT]) -> TypeGuard[Type[PydModelT]]:
-    """Exception-safe issubclass for pydantic BaseModel types"""
-    return isinstance(klass, type) and issubclass(klass, cls)
