@@ -10,13 +10,13 @@
    Pydantic v1 (these are already included in Pydantic 2.)
 """
 
-from nested_config._validators import (
+from nested_config._pydantic import (
+    patch_pydantic_json_encoders as _patch_pydantic_json_encoders,
+)
+from nested_config._pydantic import (
     patch_pydantic_validators as _patch_pydantic_validators,
 )
 from nested_config.base_model import BaseModel
-from nested_config.json import (
-    patch_pydantic_json_encoders as _patch_pydantic_json_encoders,
-)
 from nested_config.loaders import (
     ConfigLoaderError,
     NoLoaderError,
