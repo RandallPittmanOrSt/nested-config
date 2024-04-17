@@ -30,6 +30,7 @@ test_in_env() {
     fi
     deactivate
     log "--------DONE with $env_dir--------"
+    echo -e "\n\n\n" >&2
 }
 
 for tb_dir in "$SCRIPTDIR"/testbeds/*; do
