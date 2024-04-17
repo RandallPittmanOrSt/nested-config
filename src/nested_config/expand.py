@@ -68,8 +68,8 @@ def get_modelfield_annotation(model: type, field_name: str):
         ) from None
 
 
-def is_expandable(val: Any) -> bool:
-    return hasattr(val, "__annotations__")
+def is_model(val: Any) -> bool:
+    return hasattr(val, "__dict__") and "__annotations__" in val.__dict__
 
 
 class ConfigExpander:
@@ -112,10 +112,10 @@ class ConfigExpander:
         if not isinstance(field_value, (str, list, dict)):
             return field_value
         # 2.
-        if isinstance(field_value, dict) and is_expandable(field_annotation):
+        if isinstance(field_value, dict) and is_model(field_annotation):
             return self._preparse_config_dict(field_value, field_annotation, config_path)
         # 3.
-        if isinstance(field_value, str) and is_expandable(field_annotation):
+        if isinstance(field_value, str) and is_model(field_annotation):
             return self._expand_path_str_into_model(
                 field_value, field_annotation, config_path
             )
