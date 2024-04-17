@@ -6,6 +6,7 @@ import os
 from pathlib import PurePath, PurePosixPath, PureWindowsPath
 
 import pydantic
+# import Pydantic 1/2 compat fns. Also importing nested_config auto-patches pydantic
 from nested_config._pydantic import dump_json, model_validate
 
 PURE_POSIX_PATH = "/some/pure/path"
