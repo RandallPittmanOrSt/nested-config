@@ -174,8 +174,8 @@ print(house_dict)
 # {'name': 'my house', 'dimensions': {'length': 10, 'width': 20}}
 ```
 
-Note that in `/tmp/house.toml` `dimensions` is not a mapping but is a path to another toml
-file at a path relative to `house.toml`.
+Note that in `/tmp/house.toml`, `dimensions` is not a mapping but is a path to another
+toml file at a path relative to `house.toml`.
 
 See [tests](https://gitlab.com/osu-nrsg/nested-config/-/tree/master/tests) for more
 detailed use-cases, such as where the root model contains lists or dicts of other models
