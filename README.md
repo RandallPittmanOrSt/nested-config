@@ -1,109 +1,86 @@
-# nested-config README
+# nested-config
 
-**nested-config** provides for parsing configuration files that include paths to other
-config files into [Pydantic](https://github.com/samuelcolvin/pydantic/) model instances.
-It also supports validating and JSON-encoding `pathlib.PurePath` on Pydantic 1.8+.
+<span style="font-size: larger">If you've ever wanted to have the option of replacing part
+ of a configuration file with a path to another configuration file that contains those
+sub-parameters, then this package might be for you.</span>
 
-## Usage
+_nested-config_ allows you to use a series of [models](#model) such as plain classes with
+annotated attributes or fancy libraries like [dataclasses][dataclasses], [attrs][attrs],
+or [Pydantic][pydantic] to indicate (at a minimum) which fields in a set of configuration
+parameters are meant to be nested sub-config parameters. If one of those fields is
+provided not as an associated array[^assoc-array] within the configuration file but rather
+a string, _nested-config_ assumes that this string is a path to another configuration file
+that should be parsed and whose contents should replace the string in the main
+configuration file. If the string appears to be a relative path, it is assumed to be
+relative to the path of its parent configuration file.
 
-### Config loading
+## Nomenclature
 
-**nested-config** may be used in your project in two main ways.
+### model
 
-1. You may simply call `nested_config.validate_config()` with a config file path and a
-   Pydantic model which may or may not include nested Pydantic models. If there are nested
-   models and the config file has string values for those fields, those values are
-   interpreted as paths to other config files and those are recursively read into their
-   respective Pydantic models using `validate_config()`. The `default_suffix` kwarg allows
-   for specifying the file suffix (extension) to assume if the config file has no suffix
-   or its suffix is not in the `nested_config.config_dict_loaders` dict.
+_nested-config_ uses the term _model_ to refer to a class definition that includes
+annotated attributes. For example, this model, `Dimensions`, includes three attributes,
+each of float type, `x`, `y`, and `z`:
 
-   Example including mixed configuration file types and `default_suffix` (Note that PyYAML
-   is an extra dependency required for parsing yaml files):
+```python
+class Dimensions:
+    x: float
+    y: float
+    z: float
+```
 
-   **house.yaml**
+Again, `Dimensions` could be decorated as a dataclass or using `attrs.define` or could
+subclass `pydantic.BaseModel`, but none of those are strictly necessary. Those libraries
+generally provide some method for instantiating an object instance of the model, but they
+aren't necessary to use _nested-config_.
 
-   ```yaml
-   name: my house
-   dimensions: dimensions
-   ```
+The only criterion for a type to be a model is that is has a `__dict__` attribute that
+includes an `__annotations__` member. <span style="font-style: italic">Note: This does not
+mean that **instances** of the
+model must have a `__dict__` attribute. For example, instances of classes with `__slots__`
+and `NamedTuple` class instances do not have a `__dict__` attribute.</span>
 
-   **dimensions** (TOML type)
+### nested model
 
-   ```toml
-   length = 10
-   width = 20
-   ```
+A _nested model_ is a model that is included within another model as one of its class
+attributes. For example, the below model `House` includes an `name` of string type, and an
+attribute `dimensions` of `Dimensions` type (defined above). Since `Dimensions` is a
+_model_ type, this is an example of a _nested model_.
 
-   **parse_house.py**
+```python
+class House:
+    name: str
+    dimensions: Dimensions
+```
 
-   ```python
-   import pydantic
-   import yaml
+### config dict
 
-   from nested_config import validate_config
+A _config dict_ is simply a `dict` with string keys such as may be obtained by reading in a
+configuration file. For example reading in a JSON file object with `json.load` returns a
+_config dict_.
 
-   class Dimensions(pydantic.BaseModel):
-       length: int
-       width: int
+## API
 
+### `nested_config.expand_config(config_path, model, *, default_suffix = None)`
 
-   class House(pydantic.BaseModel):
-       name: str
-       dimensions: Dimensions
+This function first loads the config file at `config_path` into a [config
+dict](#config-dict). It then uses the attribute annotations of [model](#model) `model` to
+see if any of the string values in the config dict correspond to [nested
+models](#nested-model). For each such case, the string is converted into a path (if not
+absolute, assumed to be relative to `config_path`) and recursively "expanded" into another
+config dict with this function. Finally, the fully-expanded config dict is returned.
 
+If `default_suffix` is specified, any config file with an unknown suffix or no suffix will
+be assumed to be of that type, e.g. `".toml"`.
 
-   house = validate_config("house.yaml", House, default_suffix=".toml")
-   house  # House(name='my house', dimensions=Dimensions(length=10, width=20))
-   ```
+### `nested_config.config_dict_loaders`
 
-2. Alternatively, you can use `nested_config.BaseModel` which subclasses
-   `pydantic.BaseModel` and adds a `from_config` classmethod:
+`config_dict_loaders` is a `dict` that maps file suffixes to functions that take a path to
+a config file and return a [config dict](#config-dict).
 
-   **house.toml**
+#### Included loaders
 
-   ```toml
-   name = "my house"
-   dimensions = "dimensions.toml"
-   ```
-
-   **dimensions.toml**
-
-   ```toml
-   length = 12.6
-   width = 25.3
-   ```
-
-   **parse_house.py**
-
-   ```python
-   import nested_config
-
-   class Dimensions(nested_config.BaseModel):
-       length: float
-       width: float
-
-
-   class House(nested_config.BaseModel):
-       name: str
-       dimensions: Dimensions
-
-
-   house = House.from_config("house.toml", House)
-   house  # House(name='my house', dimensions=Dimensions(length=12.6, width=25.3))
-   ```
-
-   In this case, if you need to specify a default loader, just use
-   `nested_config.set_default_loader(suffix)` before using `BaseModel.from_config()`.
-
-See [tests](https://gitlab.com/osu-nrsg/nested-config/-/tree/master/tests) for more
-detailed use-cases, such as where the root pydantic model contains lists or dicts of other
-models and when those may be included in the root config file or specified as paths to
-sub-config files.
-
-### Included loaders
-
-**nested-config** automatically loads the following files based on extension:
+_nested-config_ automatically loads the following files based on extension:
 
 | Format | Extensions(s) | Library                                    |
 | ------ | ------------- | ------------------------------------------ |
@@ -111,9 +88,9 @@ sub-config files.
 | TOML   | .toml         | `tomllib` (Python 3.11+ stdlib) or `tomli` |
 | YAML   | .yaml, .yml   | `pyyaml` (extra dependency[^yaml-extra])   |
 
-### Adding loaders
+#### Adding loaders
 
-To add a loader for another file extension, simply update the `config_dict_loaders` dict:
+To add a loader for another file extension, simply update `config_dict_loaders`:
 
 ```python
 import nested_config
@@ -126,36 +103,92 @@ nested_config.config_dict_loaders[".dmy"] = dummy_loader
 
 # or add another extension for an existing loader
 nested_config.config_dict_loaders[".jsn"] = nested_config.config_dict_loaders[".json"]
+
+# or to use a different library
+import rtoml
+
+def rtoml_load(path) -> ConfigDict:
+    with open(path, "rb") as fobj:
+        return rtoml.load(fobj)  # rtoml.load expects a file or a string of TOML text
+
+nested_config.config_dict_loaders[".toml"] = rtoml_load
 ```
 
-### `PurePath` handling
+### _Deprecated features in v2.1.0, to be removed in v3.0.0_
 
-A bonus feature of **nested-config** is that it provides for validation and JSON encoding
-of `pathlib.PurePath` and its subclasses in Pydantic <2.0 (this is built into Pydantic
-2.0+). All that is needed is an import of `nested_config`. Example:
+The following functionality is available only if Pydantic is installed:
+
+- `nested_config.validate_config()` expands a configuration that possibly includes nested
+  configuration files according to a Pydantic model and then validates the config
+  dictionary into an instances of the Pydantic model.
+- `nested_config.BaseModel` can be used as a replacement for `pydantic.BaseModel` to
+  include a `from_config()` classmethod on all models that uses
+  `nested_config.validate_config()` to create an instance of the model.
+- By importing `nested_config`, `PurePath` validators and JSON encoders are added to
+  `pydantic` in Pydantic 1.8-1.10 (they are included in Pydantic 2.0+)
+
+## Basic Usage
+
+Given the following configuration files `/tmp/house.toml` and `/tmp/dimensions.toml`:
+
+<style>
+figcaption { font-weight: bold; }
+</style>
+
+<figure>
+<figcaption>Figure 1: /tmp/house.toml</figcaption>
+
+```toml
+name = "my house"
+dimensions = "tmp2/dimensions.toml"
+```
+
+</figure>
+
+<figure>
+<figcaption>Figure 2: /tmp/tmp2/dimensions.toml</figcaption>
+
+```toml
+length = 10
+width = 20
+```
+
+</figure>
+
+You can expand these into a single dict with the following:
+
+<figure>
+<figcaption>Figure 3: Expand /tmp/house.toml</figcaption>
 
 ```python
-from pathlib import PurePosixPath
-
 import nested_config
-import pydantic
+
+class Dimensions:
+    length: int
+    width: int
 
 
-class RsyncDestination(pydantic.BaseModel):
-    remote_server: str
-    remote_path: PurePosixPath
+class House:
+    name: str
+    dimensions: Dimensions
 
 
-dest = RsyncDestination(remote_server="rsync.example.com", remote_path="/data/incoming")
-
-dest  # RsyncDestination(remote_server='rsync.example.com', remote_path=PurePosixPath('/data/incoming'))
-dest.json()  # '{"remote_server":"rsync.example.com","remote_path":"/data/incoming"}'
-
+house_dict = nested_config.expand_config("/tmp/house.toml", House)
+print(house_dict)
+# {'name': 'my house', 'dimensions': {'length': 10, 'width': 20}}
 ```
+
+Note that in `/tmp/house.toml` `dimensions` is not a mapping but is a path to another toml
+file at a path relative to `house.toml`.
+
+See [tests](https://gitlab.com/osu-nrsg/nested-config/-/tree/master/tests) for more
+detailed use-cases, such as where the root model contains lists or dicts of other models
+and when those may be included in the root config file or specified as paths to sub-config
+files.
 
 ## Pydantic 1.0/2.0 Compatibility
 
-nested-config is runtime compatible with Pydantic 1.8+ and Pydantic 2.0.
+The [pydantic functionality](#deprecated-features-in-v210-to-be-removed-in-v300) in nested-config is runtime compatible with Pydantic 1.8+ and Pydantic 2.0.
 
 The follow table gives info on how to configure the [mypy](https://www.mypy-lang.org/) and
 [Pyright](https://microsoft.github.io/pyright) type checkers to properly work, depending
@@ -168,8 +201,15 @@ on the version of Pydantic you are using.
 
 ## Footnotes
 
-[^yaml-extra]: Install `pyyaml` separately with `pip` or install **nested-config** with
+[^yaml-extra]: Install `pyyaml` separately with `pip` or install _nested-config_ with
                `pip install nested-config[yaml]`.
+
+[^assoc-array]: Each language uses one or more names for an associative arrays. JSON calls
+                it an _object_, YAML calls is a _mapping_, and TOML calls is a _table_.
+                Any of course in Python it's a _dictionary_, or `dict`.
 
 [1]: https://mypy.readthedocs.io/en/latest/config_file.html
 [2]: https://microsoft.github.io/pyright/#/configuration
+[dataclasses]: https://docs.python.org/3/library/dataclasses.html
+[attrs]: https://www.attrs.org
+[pydantic]: https://pydantic.dev
