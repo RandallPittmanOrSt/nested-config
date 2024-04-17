@@ -131,14 +131,6 @@ The following functionality is available only if Pydantic is installed:
 
 Given the following configuration files `/tmp/house.toml` and `/tmp/dimensions.toml`:
 
-<style>
-
-figcaption {
-    font-weight: bold;
-}
-
-</style>
-
 <figure>
 <figcaption>Figure 1: /tmp/house.toml</figcaption>
 
