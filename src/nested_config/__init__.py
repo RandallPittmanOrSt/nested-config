@@ -13,6 +13,7 @@
 from nested_config._pydantic import (
     ispydmodel,
     validate_config,
+    BaseModel,
 )
 from nested_config._pydantic import (
     patch_pydantic_json_encoders as _patch_pydantic_json_encoders,
@@ -20,7 +21,6 @@ from nested_config._pydantic import (
 from nested_config._pydantic import (
     patch_pydantic_validators as _patch_pydantic_validators,
 )
-from nested_config.base_model import BaseModel
 from nested_config.expand import expand_config
 from nested_config.loaders import (
     ConfigLoaderError,

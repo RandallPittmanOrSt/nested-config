@@ -1,6 +1,6 @@
 """_pyd_compat.py - Functions and types to assist with Pydantic 1/2 compatibility"""
 
-from pathlib import PurePath, PurePosixPath, PureWindowsPath
+from pathlib import Path, PurePath, PurePosixPath, PureWindowsPath
 from typing import Any, Dict, Optional, Type, TypeVar
 
 import pydantic
@@ -13,6 +13,7 @@ from typing_extensions import TypeAlias, TypeGuard
 
 from nested_config._types import PathLike
 from nested_config.expand import expand_config
+from nested_config.loaders import load_config
 
 PathT = TypeVar("PathT", bound=PurePath)
 PydModelT = TypeVar("PydModelT", bound=pydantic.BaseModel)
@@ -130,3 +131,45 @@ def patch_pydantic_validators():
                 (PurePath, [pure_path_validator]),  # last b/c others are more specific
             ]
         )
+
+
+class BaseModel(pydantic.BaseModel):
+    """Extends pydantic.BaseModel with from_config classmethod to load a config file into
+    the model."""
+
+    @classmethod
+    def from_config(
+        cls: Type[PydModelT], config_path: PathLike, convert_strpaths=True
+    ) -> PydModelT:
+        """Create Pydantic model from a config file
+
+        Parameters
+        ----------
+        config_path
+            Path to the config file
+        convert_strpaths
+            If True, every string value [a] in the dict from the parsed config file that
+            corresponds to a Pydantic model field [b] in the base model will be
+            interpreted as a path to another config file and an attempt will be made to
+            parse that config file [a] and make it into an object of that [b] model type,
+            and so on, recursively.
+
+        Returns
+        -------
+        An object of this class
+
+        Raises
+        -------
+        NoLoaderError
+            No loader is available for the config file extension
+        ConfigLoaderError
+            There was a problem loading a config file with its loader
+        pydantic.ValidationError
+            The data fields or types in the file do not match the model.
+        """
+        config_path = Path(config_path)
+        if convert_strpaths:
+            return validate_config(config_path, cls)
+        # otherwise just load the config as-is
+        config_dict = load_config(config_path)
+        return model_validate(cls, config_dict)
