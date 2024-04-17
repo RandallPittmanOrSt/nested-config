@@ -13,12 +13,6 @@ else:
 
 from nested_config._types import ConfigDict, ConfigDictLoader, PathLike
 
-YAML_INSTALLED = False
-with contextlib.suppress(ImportError):
-    import yaml  # type: ignore
-
-    YAML_INSTALLED = True
-
 
 class NoLoaderError(Exception):
     def __init__(self, suffix: str, default_suffix: Optional[str]):
@@ -51,8 +45,9 @@ config_dict_loaders: Dict[str, ConfigDictLoader] = {
 }
 """Mapping of config file extension to config file loader"""
 
-
-if YAML_INSTALLED:
+# Add YAML loader, if available
+with contextlib.suppress(ImportError):
+    import yaml
 
     def yaml_load(path: PathLike) -> ConfigDict:
         """Load a YAML config file (safely)"""
