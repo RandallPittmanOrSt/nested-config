@@ -133,6 +133,11 @@ def patch_pydantic_validators():
         )
 
 
+# Always patch pydantic
+patch_pydantic_json_encoders()
+patch_pydantic_validators()
+
+
 class BaseModel(pydantic.BaseModel):
     """Extends pydantic.BaseModel with from_config classmethod to load a config file into
     the model."""

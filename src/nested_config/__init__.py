@@ -15,12 +15,6 @@ from nested_config._pydantic import (
     validate_config,
     BaseModel,
 )
-from nested_config._pydantic import (
-    patch_pydantic_json_encoders as _patch_pydantic_json_encoders,
-)
-from nested_config._pydantic import (
-    patch_pydantic_validators as _patch_pydantic_validators,
-)
 from nested_config.expand import expand_config
 from nested_config.loaders import (
     ConfigLoaderError,
@@ -28,7 +22,3 @@ from nested_config.loaders import (
     config_dict_loaders,
 )
 from nested_config.version import __version__
-
-# We always patch the validators, but in the future this may be made optional
-_patch_pydantic_validators()
-_patch_pydantic_json_encoders()
