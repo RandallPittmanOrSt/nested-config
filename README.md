@@ -7,7 +7,7 @@ sub-parameters, then this package might be for you.</span>
 _nested-config_ allows you to use a series of [models](#model) such as plain classes with
 annotated attributes or fancy libraries like [dataclasses][dataclasses], [attrs][attrs],
 or [Pydantic][pydantic] to indicate (at a minimum) which fields in a set of configuration
-parameters are meant to be nested sub-config parameters. If one of those fields is
+parameters are meant to be nested sub-config-parameters. If one of those fields is
 provided not as an associated array[^assoc-array] within the configuration file but rather
 a string, _nested-config_ assumes that this string is a path to another configuration file
 that should be parsed and whose contents should replace the string in the main
@@ -132,7 +132,11 @@ The following functionality is available only if Pydantic is installed:
 Given the following configuration files `/tmp/house.toml` and `/tmp/dimensions.toml`:
 
 <style>
-figcaption { font-weight: bold; }
+
+figcaption {
+    font-weight: bold;
+}
+
 </style>
 
 <figure>
