@@ -10,11 +10,16 @@
    Pydantic v1 (these are already included in Pydantic 2.)
 """
 
-from nested_config._pydantic import (
-    ispydmodel,
-    validate_config,
-    BaseModel,
-)
+try:
+    # Don't require pydantic
+    from nested_config._pydantic import (
+        BaseModel,
+        ispydmodel,
+        validate_config,
+    )
+except ImportError:
+    pass
+
 from nested_config.expand import expand_config
 from nested_config.loaders import (
     ConfigLoaderError,
