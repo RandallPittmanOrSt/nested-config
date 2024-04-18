@@ -16,8 +16,8 @@ relative to the path of its parent configuration file.
 ## Contents
 
 - [Contents](#contents)
-- [Nomenclature](#nomenclature)
 - [Basic Usage](#basic-usage)
+- [Nomenclature](#nomenclature)
   - [loader](#loader)
   - [model](#model)
   - [nested model](#nested-model)
@@ -30,8 +30,6 @@ relative to the path of its parent configuration file.
   - [_Deprecated features in v2.1.0, to be removed in v3.0.0_](#deprecated-features-in-v210-to-be-removed-in-v300)
 - [Pydantic 1.0/2.0 Compatibility](#pydantic-1020-compatibility)
 - [Footnotes](#footnotes)
-
-## Nomenclature
 
 ## Basic Usage
 
@@ -87,6 +85,8 @@ See [tests](https://gitlab.com/osu-nrsg/nested-config/-/tree/master/tests) for m
 detailed use-cases, such as where the root model contains lists or dicts of other models
 and when those may be included in the root config file or specified as paths to sub-config
 files.
+
+## Nomenclature
 
 ### loader
 
