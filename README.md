@@ -1,8 +1,7 @@
 # nested-config <!-- omit in toc -->
 
-## Contents
+## Contents <!-- omit in toc -->
 
-- [Contents](#contents)
 - [Nomenclature](#nomenclature)
   - [loader](#loader)
   - [model](#model)
