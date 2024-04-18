@@ -17,6 +17,7 @@ relative to the path of its parent configuration file.
 
 - [Contents](#contents)
 - [Nomenclature](#nomenclature)
+- [Basic Usage](#basic-usage)
   - [loader](#loader)
   - [model](#model)
   - [nested model](#nested-model)
@@ -27,11 +28,65 @@ relative to the path of its parent configuration file.
     - [Included loaders](#included-loaders)
     - [Adding loaders](#adding-loaders)
   - [_Deprecated features in v2.1.0, to be removed in v3.0.0_](#deprecated-features-in-v210-to-be-removed-in-v300)
-- [Basic Usage](#basic-usage)
 - [Pydantic 1.0/2.0 Compatibility](#pydantic-1020-compatibility)
 - [Footnotes](#footnotes)
 
 ## Nomenclature
+
+## Basic Usage
+
+Given the following configuration files `/tmp/house.toml` and `/tmp/tmp2/dimensions.toml`:
+
+<figure>
+<figcaption>Figure 1: /tmp/house.toml</figcaption>
+
+```toml
+name = "my house"
+dimensions = "tmp2/dimensions.toml"
+```
+
+</figure>
+
+<figure>
+<figcaption>Figure 2: /tmp/tmp2/dimensions.toml</figcaption>
+
+```toml
+length = 10
+width = 20
+```
+
+</figure>
+
+You can expand these into a single dict with the following:
+
+<figure>
+<figcaption>Figure 3: Expand /tmp/house.toml</figcaption>
+
+```python
+import nested_config
+
+class Dimensions:
+    length: int
+    width: int
+
+
+class House:
+    name: str
+    dimensions: Dimensions
+
+
+house_dict = nested_config.expand_config("/tmp/house.toml", House)
+print(house_dict)
+# {'name': 'my house', 'dimensions': {'length': 10, 'width': 20}}
+```
+
+Note that in `/tmp/house.toml`, `dimensions` is not a mapping but is a path to another
+toml file at a path relative to `house.toml`.
+
+See [tests](https://gitlab.com/osu-nrsg/nested-config/-/tree/master/tests) for more
+detailed use-cases, such as where the root model contains lists or dicts of other models
+and when those may be included in the root config file or specified as paths to sub-config
+files.
 
 ### loader
 
@@ -168,61 +223,6 @@ The following functionality is available only if Pydantic is installed:
   `nested_config.validate_config()` to create an instance of the model.
 - By importing `nested_config`, `PurePath` validators and JSON encoders are added to
   `pydantic` in Pydantic 1.8-1.10 (they are included in Pydantic 2.0+)
-
-## Basic Usage
-
-Given the following configuration files `/tmp/house.toml` and `/tmp/tmp2/dimensions.toml`:
-
-<figure>
-<figcaption>Figure 1: /tmp/house.toml</figcaption>
-
-```toml
-name = "my house"
-dimensions = "tmp2/dimensions.toml"
-```
-
-</figure>
-
-<figure>
-<figcaption>Figure 2: /tmp/tmp2/dimensions.toml</figcaption>
-
-```toml
-length = 10
-width = 20
-```
-
-</figure>
-
-You can expand these into a single dict with the following:
-
-<figure>
-<figcaption>Figure 3: Expand /tmp/house.toml</figcaption>
-
-```python
-import nested_config
-
-class Dimensions:
-    length: int
-    width: int
-
-
-class House:
-    name: str
-    dimensions: Dimensions
-
-
-house_dict = nested_config.expand_config("/tmp/house.toml", House)
-print(house_dict)
-# {'name': 'my house', 'dimensions': {'length': 10, 'width': 20}}
-```
-
-Note that in `/tmp/house.toml`, `dimensions` is not a mapping but is a path to another
-toml file at a path relative to `house.toml`.
-
-See [tests](https://gitlab.com/osu-nrsg/nested-config/-/tree/master/tests) for more
-detailed use-cases, such as where the root model contains lists or dicts of other models
-and when those may be included in the root config file or specified as paths to sub-config
-files.
 
 ## Pydantic 1.0/2.0 Compatibility
 
