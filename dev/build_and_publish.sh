@@ -16,7 +16,7 @@ die() {
 }
 
 REPO="${1:-testpypi}"
-echo "Publishing to the $REPO repo."
+log "----Publishing to the $REPO repo.----"
 
 REPO_UPPER="$(echo "$REPO" | tr '[:lower:]' '[:upper:]')"
 
