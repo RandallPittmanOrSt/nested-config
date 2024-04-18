@@ -26,9 +26,9 @@ test_in_env() {
     pytest
     log "----mypy----"
     if [ "$pyd_majorver" -eq 1 ]; then
-      mypy ./ --always-true PYDANTIC_1
+      mypy ./ --always-true PYDANTIC_1 --cache-dir "$env_dir/.mypy_cache"
     else
-      mypy ./ --always-false PYDANTIC_1
+      mypy ./ --always-false PYDANTIC_1 --cache-dir "$env_dir/.mypy_cache"
     fi
     deactivate
     log "--------DONE with $env_dir--------"
