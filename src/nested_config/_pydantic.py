@@ -9,7 +9,7 @@ import pydantic.fields
 import pydantic.json
 import pydantic.validators
 from setuptools._vendor.packaging.version import Version  # type: ignore
-from typing_extensions import TypeAlias, TypeGuard
+from typing_extensions import TypeAlias
 
 from nested_config._types import PathLike
 from nested_config.expand import expand_config
@@ -25,11 +25,6 @@ if PYDANTIC_1:
 else:
     FieldInfo_: TypeAlias = pydantic.fields.FieldInfo
 ModelFields: TypeAlias = Dict[str, FieldInfo_]
-
-
-def ispydmodel(klass, cls: Type[PydModelT]) -> TypeGuard[Type[PydModelT]]:
-    """Exception-safe issubclass for pydantic BaseModel types"""
-    return isinstance(klass, type) and issubclass(klass, cls)
 
 
 def validate_config(

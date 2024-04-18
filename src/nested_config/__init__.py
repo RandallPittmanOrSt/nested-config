@@ -14,7 +14,6 @@ try:
     # Don't require pydantic
     from nested_config._pydantic import (
         BaseModel,
-        ispydmodel,
         validate_config,
     )
 except ImportError:
