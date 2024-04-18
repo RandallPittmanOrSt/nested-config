@@ -4,7 +4,7 @@ SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 readonly SCRIPTDIR
 set -e
 
-envs_dir="$SCRIPTDIR/testbeds"
+envs_dir="$SCRIPTDIR/testenvs"
 
 export POETRY_VIRTUALENVS_PREFER_ACTIVE_PYTHON=true
 
