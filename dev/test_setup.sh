@@ -1,6 +1,6 @@
 #!/bin/bash -li
+# shellcheck disable=SC1091
 SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
-# SCRIPTNAME=$(basename "${BASH_SOURCE[0]}")
 readonly SCRIPTDIR
 set -e
 
@@ -23,7 +23,6 @@ setup_venv() {
     mkdir -p "$env_dir"
     pyenv shell "$py_ver"
     python -m venv "$env_dir" || die "Coudln't create venv"
-    # shellcheck disable=SC1091
     . "$env_dir/bin/activate"
     pip install -U pip || die "Couldn't update pip"
     pip install "pydantic==$pyd_ver" pyyaml pytest mypy types-pyyaml || die "couldn't install pydantic or pyyaml"

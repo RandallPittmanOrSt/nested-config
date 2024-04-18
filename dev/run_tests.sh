@@ -1,6 +1,6 @@
 #!/bin/bash -li
-set -e
 # shellcheck disable=SC1091
+set -e
 SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 
 log() {
