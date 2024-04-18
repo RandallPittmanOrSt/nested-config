@@ -1,4 +1,22 @@
-# nested-config
+# nested-config <!-- omit in toc -->
+
+## Contents
+
+- [Contents](#contents)
+- [Nomenclature](#nomenclature)
+  - [loader](#loader)
+  - [model](#model)
+  - [nested model](#nested-model)
+  - [config dict](#config-dict)
+- [API](#api)
+  - [`nested_config.expand_config(config_path, model, *, default_suffix = None)`](#nested_configexpand_configconfig_path-model--default_suffix--none)
+  - [`nested_config.config_dict_loaders`](#nested_configconfig_dict_loaders)
+    - [Included loaders](#included-loaders)
+    - [Adding loaders](#adding-loaders)
+  - [_Deprecated features in v2.1.0, to be removed in v3.0.0_](#deprecated-features-in-v210-to-be-removed-in-v300)
+- [Basic Usage](#basic-usage)
+- [Pydantic 1.0/2.0 Compatibility](#pydantic-1020-compatibility)
+- [Footnotes](#footnotes)
 
 <span style="font-size: larger">If you've ever wanted to have the option of replacing part
  of a configuration file with a path to another configuration file that contains those
