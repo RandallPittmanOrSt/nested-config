@@ -58,3 +58,8 @@ line-length = 90
 
 [tool.pyright]
 defineConstant = { "PYDANTIC_1" = false }  # change to true for Pydantic <2.0
+
+[tool.pytest.ini_options]
+filterwarnings = [
+    "ignore::DeprecationWarning:nested_config._pydantic"
+]

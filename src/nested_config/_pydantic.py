@@ -1,5 +1,6 @@
 """_pyd_compat.py - Functions and types to assist with Pydantic 1/2 compatibility"""
 
+import warnings
 from pathlib import Path, PurePath, PurePosixPath, PureWindowsPath
 from typing import Any, Optional, Type, TypeVar
 
@@ -9,6 +10,7 @@ import pydantic.fields
 import pydantic.json
 import pydantic.validators
 from setuptools._vendor.packaging.version import Version  # type: ignore
+from typing_extensions import Unpack
 
 from nested_config._types import PathLike
 from nested_config.expand import expand_config
@@ -17,6 +19,15 @@ from nested_config.loaders import load_config
 PathT = TypeVar("PathT", bound=PurePath)
 PydModelT = TypeVar("PydModelT", bound=pydantic.BaseModel)
 PYDANTIC_1 = Version(pydantic.VERSION) < Version("2.0")
+
+
+def api_deprecation(api_name):
+    warnings.warn(
+        f"{api_name} is deprecated as of nested_config v2.1.0 and will be removed in"
+        " v3.0.0",
+        DeprecationWarning,
+        stacklevel=2,
+    )
 
 
 def validate_config(
@@ -56,6 +67,7 @@ def validate_config(
         The data fields or types in the file do not match the model.
 
     """
+    api_deprecation("nested_config.validate_config")
     config_dict = expand_config(config_path, model, default_suffix=default_suffix)
     # Create and validate the config object
     return model_validate(model, config_dict)
@@ -80,6 +92,7 @@ def dump_json(model: pydantic.BaseModel) -> str:
 def patch_pydantic_json_encoders():
     """Add PurePath encoder for JSON in Pydantic < 2.0"""
     if PYDANTIC_1:
+        api_deprecation("nested_config.patch_pydantic_json_encoders")
         # These are already in pydantic 2+
         pydantic.json.ENCODERS_BY_TYPE[PurePath] = str
 
@@ -110,6 +123,7 @@ def pure_windows_path_validator(v: Any):
 def patch_pydantic_validators():
     """Add Pure*Path validators to Pydantic < 2.0"""
     if PYDANTIC_1:
+        api_deprecation("nested_config.patch_pydantic_validators")
         # These are already included in pydantic 2+
         pydantic.validators._VALIDATORS.extend(
             [
@@ -128,6 +142,17 @@ patch_pydantic_validators()
 class BaseModel(pydantic.BaseModel):
     """Extends pydantic.BaseModel with from_config classmethod to load a config file into
     the model."""
+
+    if PYDANTIC_1:
+
+        def __init_subclass__(cls) -> None:
+            api_deprecation("nested_config.BaseModel")
+            return super().__init_subclass__()
+    else:
+
+        def __init_subclass__(cls, **kwargs: Unpack[pydantic.ConfigDict]):
+            api_deprecation("nested_config.BaseModel")
+            return super().__init_subclass__(**kwargs)
 
     @classmethod
     def from_config(
