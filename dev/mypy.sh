@@ -1,4 +1,8 @@
 #!/bin/bash
+SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+PROJECT_ROOT="$(realpath -s "$SCRIPTDIR/..")"
+cd "$PROJECT_ROOT" || { echo "Couldn't cd to project root" >&2 ; exit 1 ; }
+
 pydantic_version=$(pip show pydantic | grep '^Version:' | cut -d' ' -f2)
 pydantic_version_major=$(echo "$pydantic_version" | cut -d'.' -f1)
 declare -a mypy_args
