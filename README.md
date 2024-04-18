@@ -47,10 +47,9 @@ can subclass [`pydantic.BaseModel`][pydantic] to provide some method for instant
 object instance of the model but they aren't necessary to use _nested-config_.
 
 The only criterion for a type to be a model is that is has a `__dict__` attribute that
-includes an `__annotations__` member. <span style="font-style: italic">Note: This does
-**not** mean that **instances** of the
-model must have a `__dict__` attribute. For example, instances of classes with `__slots__`
-and `NamedTuple` instances may not have a `__dict__` attribute.</span>
+includes an `__annotations__` member. _Note: This does **not** mean that **instances** of
+the model must have a `__dict__` attribute. For example, instances of classes with
+`__slots__` and `NamedTuple` instances may not have a `__dict__` attribute._
 
 ### nested model
 
