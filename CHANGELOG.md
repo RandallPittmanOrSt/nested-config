@@ -7,6 +7,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.1.0] - 2024-04-18
+
+### Added
+
+- `nested_config.expand_config` - Recursively read in any config file(s) into a dict based
+  on model class(es). This is now the primary functionality, superseeding
+  `validate_config`, which will be deprecated.
+
+### Changed
+
+- Pydantic is now an extra (optional) dependency, only needed to use the below [deprecated
+  syntax](#2.1.0-deprecated). All Pydantic stuff has been merged into a single module and
+  emits deprecation warnings when used.
+- Improved deb build and test scripts
+
+### Deprecated <a name="2.1.0-deprecated"></a>
+
+- Pydantic PurePath validator and JSON encoder -- Doesn't need to be part of this project
+  and not needed in Pydantic 2+
+- Pydantic validation integration -- This project started out as being specifically for
+  working with Pydantic models and was tightly integrated with Pydantic, but that is no
+  longer necessary. Use with Pydantic or attrs or whatever is better left to the user.
+
 ## [2.0.3] - 2024-04-15
 
 - Fix typing issue regression for Pydantic < 2.0 introduced in last release
@@ -49,7 +72,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Export `TomlParsingError` from rtoml for downstream exception handling (without needing to explicitly
   import rtoml).
 
-[Unreleased]: https://gitlab.com/osu-nrsg/nested-config/-/compare/v2.0.3...master
+[Unreleased]: https://gitlab.com/osu-nrsg/nested-config/-/compare/v2.1.0...master
+[2.1.0]: https://gitlab.com/osu-nrsg/nested-config/-/compare/v2.0.3...v2.1.0
 [2.0.3]: https://gitlab.com/osu-nrsg/nested-config/-/compare/v2.0.2...v2.0.3
 [2.0.2]: https://gitlab.com/osu-nrsg/nested-config/-/compare/v2.0.1...v2.0.2
 [2.0.1]: https://gitlab.com/osu-nrsg/nested-config/-/compare/v2.0.0...v2.0.1
