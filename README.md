@@ -2,19 +2,32 @@
 
 <span style="font-size: larger">If you've ever wanted to have the option of replacing part
  of a configuration file with a path to another configuration file that contains those
-sub-parameters, then this package might be for you.</span>
+sub-parameters, then _nested-config_ might be for you.</span>
 
-_nested-config_ allows you to use a series of [models](#model) such as plain classes with
-annotated attributes or fancy libraries like [dataclasses][dataclasses], [attrs][attrs],
-or [Pydantic][pydantic] to indicate (at a minimum) which fields in a set of configuration
-parameters are meant to be nested sub-config-parameters. If one of those fields is
-provided not as an associated array[^assoc-array] within the configuration file but rather
-a string, _nested-config_ assumes that this string is a path to another configuration file
-that should be parsed and whose contents should replace the string in the main
+_nested-config_ allows you to parse configuration files that contain references to other
+configuration files using a series of [models](#model). If a model includes a [nested
+model](#nested-model) as one of its attributes and _nested-config_ finds a string value
+for that parameter in the configuration file instead of an associative
+array[^assoc-array], then it assumes that this string is a path to another configuration
+file that should be parsed and whose contents should replace the string in the main
 configuration file. If the string appears to be a relative path, it is assumed to be
 relative to the path of its parent configuration file.
 
 ## Nomenclature
+
+### loader
+
+A _loader_ is a function that reads a config file and returns a `dict` containing the
+key-value pairs from the file. _nested-config_ includes loaders for JSON, TOML, and (if
+PyYAML is installed) YAML. For example, the JSON loader looks like this:
+
+```python
+import json
+
+def json_load(path):
+    with open(path, "rb") as fobj:
+        return json.load(fobj)
+```
 
 ### model
 
@@ -29,16 +42,15 @@ class Dimensions:
     z: float
 ```
 
-Again, `Dimensions` could be decorated as a dataclass or using `attrs.define` or could
-subclass `pydantic.BaseModel`, but none of those are strictly necessary. Those libraries
-generally provide some method for instantiating an object instance of the model, but they
-aren't necessary to use _nested-config_.
+A model can be decorated as a [dataclass][dataclasses] or using [`attrs.define`][attrs] or
+can subclass [`pydantic.BaseModel`][pydantic] to provide some method for instantiating an
+object instance of the model but they aren't necessary to use _nested-config_.
 
 The only criterion for a type to be a model is that is has a `__dict__` attribute that
-includes an `__annotations__` member. <span style="font-style: italic">Note: This does not
-mean that **instances** of the
+includes an `__annotations__` member. <span style="font-style: italic">Note: This does
+**not** mean that **instances** of the
 model must have a `__dict__` attribute. For example, instances of classes with `__slots__`
-and `NamedTuple` class instances do not have a `__dict__` attribute.</span>
+and `NamedTuple` instances may not have a `__dict__` attribute.</span>
 
 ### nested model
 
@@ -55,28 +67,42 @@ class House:
 
 ### config dict
 
-A _config dict_ is simply a `dict` with string keys such as may be obtained by reading in a
-configuration file. For example reading in a JSON file object with `json.load` returns a
-_config dict_.
+A _config dict_ is simply a `dict` with string keys such as may be obtained by reading in
+configuration text. For example reading in a string of TOML text with `tomllib.loads`
+returns a _config dict_.
+
+```python
+import tomllib
+
+config = "x = 2\ny = 3"
+print(tomllib.loads(config))
+# {'x': 2, 'y': 3}
+```
 
 ## API
 
 ### `nested_config.expand_config(config_path, model, *, default_suffix = None)`
 
 This function first loads the config file at `config_path` into a [config
-dict](#config-dict). It then uses the attribute annotations of [model](#model) `model` to
-see if any of the string values in the config dict correspond to [nested
-models](#nested-model). For each such case, the string is converted into a path (if not
-absolute, assumed to be relative to `config_path`) and recursively "expanded" into another
-config dict with this function. Finally, the fully-expanded config dict is returned.
+dict](#config-dict) using the appropriate [loader](#loader). It then uses the attribute
+annotations of [`model`](#model) and/or any [nested models](#nested-model) within `model`
+to see if any of the string values in the configuration file correspond to a nested model.
+For each such case, the string is assumed to be a path and is loaded into another config
+dict which replaces the string value in the parent config dict. This continues until all
+paths are converted and then the fully-expanded config dict is returned.
 
-If `default_suffix` is specified, any config file with an unknown suffix or no suffix will
-be assumed to be of that type, e.g. `".toml"`.
+Note that all non-absolute string paths are assumed to be relative to the path of their
+parent config file.
+
+The loader for a given config file is determined by file extension (AKA suffix). If
+`default_suffix` is specified, any config file with an unknown suffix or no suffix will be
+assumed to be of that type, e.g. `".toml"`. (Otherwise this is an error.) It is possible
+for one config file to include a path to a config file of a different format, so long as
+each file has the appropriate suffix and there is a loader for that suffix.
 
 ### `nested_config.config_dict_loaders`
 
-`config_dict_loaders` is a `dict` that maps file suffixes to functions that take a path to
-a config file and return a [config dict](#config-dict).
+`config_dict_loaders` is a `dict` that maps file suffixes to [loaders](#loader).
 
 #### Included loaders
 
@@ -96,7 +122,7 @@ To add a loader for another file extension, simply update `config_dict_loaders`:
 import nested_config
 from nested_config import ConfigDict  # alias for dict[str, Any]
 
-def dummy_loader(config_path: Path) -> ConfigDict:
+def dummy_loader(config_path: Path | str) -> ConfigDict:
     return {"a": 1, "b": 2}
 
 nested_config.config_dict_loaders[".dmy"] = dummy_loader
@@ -104,12 +130,12 @@ nested_config.config_dict_loaders[".dmy"] = dummy_loader
 # or add another extension for an existing loader
 nested_config.config_dict_loaders[".jsn"] = nested_config.config_dict_loaders[".json"]
 
-# or to use a different library
+# or use a different library to replace an existing loader
 import rtoml
 
 def rtoml_load(path) -> ConfigDict:
     with open(path, "rb") as fobj:
-        return rtoml.load(fobj)  # rtoml.load expects a file or a string of TOML text
+        return rtoml.load(fobj)
 
 nested_config.config_dict_loaders[".toml"] = rtoml_load
 ```
@@ -118,9 +144,8 @@ nested_config.config_dict_loaders[".toml"] = rtoml_load
 
 The following functionality is available only if Pydantic is installed:
 
-- `nested_config.validate_config()` expands a configuration that possibly includes nested
-  configuration files according to a Pydantic model and then validates the config
-  dictionary into an instances of the Pydantic model.
+- `nested_config.validate_config()` expands a configuration file according to a Pydantic
+  model and then validates the config dictionary into an instance of the Pydantic model.
 - `nested_config.BaseModel` can be used as a replacement for `pydantic.BaseModel` to
   include a `from_config()` classmethod on all models that uses
   `nested_config.validate_config()` to create an instance of the model.
@@ -129,7 +154,7 @@ The following functionality is available only if Pydantic is installed:
 
 ## Basic Usage
 
-Given the following configuration files `/tmp/house.toml` and `/tmp/dimensions.toml`:
+Given the following configuration files `/tmp/house.toml` and `/tmp/tmp2/dimensions.toml`:
 
 <figure>
 <figcaption>Figure 1: /tmp/house.toml</figcaption>
@@ -184,7 +209,8 @@ files.
 
 ## Pydantic 1.0/2.0 Compatibility
 
-The [pydantic functionality](#deprecated-features-in-v210-to-be-removed-in-v300) in nested-config is runtime compatible with Pydantic 1.8+ and Pydantic 2.0.
+The [pydantic functionality](#deprecated-features-in-v210-to-be-removed-in-v300) in
+nested-config is runtime compatible with Pydantic 1.8+ and Pydantic 2.0.
 
 The follow table gives info on how to configure the [mypy](https://www.mypy-lang.org/) and
 [Pyright](https://microsoft.github.io/pyright) type checkers to properly work, depending
