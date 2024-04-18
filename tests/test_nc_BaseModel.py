@@ -2,13 +2,13 @@
 
 from pathlib import Path
 
-from nested_config import expand_config
+import nested_config
 
 TOML_PATH = Path(__file__).parent / "toml_files" / "simple_house.toml"
 YAML_PATH = Path(__file__).parent / "yaml_files" / "simple_house.yaml"
 
 
-class House:
+class House(nested_config.BaseModel):
     name: str
     length: int
     width: int
@@ -19,5 +19,5 @@ HOUSE_DATA = {"name": "home", "length": 30, "width": 20}
 
 def test_basic_house_file():
     """Test creating a House with the from_toml method of nested_config.BaseModel"""
-    assert expand_config(TOML_PATH, House) == HOUSE_DATA
-    assert expand_config(YAML_PATH, House) == HOUSE_DATA
+    assert House.from_config(TOML_PATH) == House(**HOUSE_DATA)
+    assert House.from_config(YAML_PATH) == House(**HOUSE_DATA)
