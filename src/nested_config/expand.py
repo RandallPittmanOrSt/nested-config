@@ -32,7 +32,6 @@ class ConfigExpansionError(RuntimeError):
 @functools.lru_cache
 def get_model_annotations(model: type) -> Dict[str, Any]:
     """Get the aggregated annotations of all members of a model"""
-    # sourcery skip: dict-assign-update-to-union
     annotations: Dict[str, Any] = {}
     for cls in inspect.getmro(model)[::-1]:
         annotations.update(cls.__dict__.get("__annotations__", {}))
