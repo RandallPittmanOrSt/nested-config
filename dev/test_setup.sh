@@ -8,8 +8,7 @@ envs_dir="$SCRIPTDIR/testbeds"
 
 export POETRY_VIRTUALENVS_PREFER_ACTIVE_PYTHON=true
 
-PY_VERS=(3.8 3.9 3.10 3.11 3.12)
-PYD_VERS=(1.8 1.10 2.7)
+. "$SCRIPTDIR/test_vers.sh"
 
 die() {
     echo "$SCRIPTNAME Error: ${1:-}" >&2

@@ -3,6 +3,8 @@
 set -e
 SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 
+. "$SCRIPTDIR/test_vers.sh"
+
 log() {
     echo "$*" >&2
 }
@@ -33,6 +35,9 @@ test_in_env() {
     echo -e "\n\n\n" >&2
 }
 
-for tb_dir in "$SCRIPTDIR"/testbeds/*; do
-  test_in_env "$tb_dir"
+for py_ver in "${PY_VERS[@]}"; do
+  for pyd_ver in "${PYD_VERS[@]}"; do
+    testbed_dir="$SCRIPTDIR/testenvs/py${py_ver}_pyd${pyd_ver}"
+    test_in_env "$testbed_dir"
+  done
 done
