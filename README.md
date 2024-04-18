@@ -1,7 +1,21 @@
 # nested-config <!-- omit in toc -->
 
-## Contents <!-- omit in toc -->
+<span style="font-size: larger">If you've ever wanted to have the option of replacing part
+ of a configuration file with a path to another configuration file that contains those
+sub-parameters, then _nested-config_ might be for you.</span>
 
+_nested-config_ allows you to parse configuration files that contain references to other
+configuration files using a series of [models](#model). If a model includes a [nested
+model](#nested-model) as one of its attributes and _nested-config_ finds a string value
+for that parameter in the configuration file instead of an associative
+array[^assoc-array], then it assumes that this string is a path to another configuration
+file that should be parsed and whose contents should replace the string in the main
+configuration file. If the string appears to be a relative path, it is assumed to be
+relative to the path of its parent configuration file.
+
+## Contents
+
+- [Contents](#contents)
 - [Nomenclature](#nomenclature)
   - [loader](#loader)
   - [model](#model)
@@ -16,19 +30,6 @@
 - [Basic Usage](#basic-usage)
 - [Pydantic 1.0/2.0 Compatibility](#pydantic-1020-compatibility)
 - [Footnotes](#footnotes)
-
-<span style="font-size: larger">If you've ever wanted to have the option of replacing part
- of a configuration file with a path to another configuration file that contains those
-sub-parameters, then _nested-config_ might be for you.</span>
-
-_nested-config_ allows you to parse configuration files that contain references to other
-configuration files using a series of [models](#model). If a model includes a [nested
-model](#nested-model) as one of its attributes and _nested-config_ finds a string value
-for that parameter in the configuration file instead of an associative
-array[^assoc-array], then it assumes that this string is a path to another configuration
-file that should be parsed and whose contents should replace the string in the main
-configuration file. If the string appears to be a relative path, it is assumed to be
-relative to the path of its parent configuration file.
 
 ## Nomenclature
 
