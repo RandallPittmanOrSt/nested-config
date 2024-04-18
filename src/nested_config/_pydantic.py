@@ -1,7 +1,7 @@
 """_pyd_compat.py - Functions and types to assist with Pydantic 1/2 compatibility"""
 
 from pathlib import Path, PurePath, PurePosixPath, PureWindowsPath
-from typing import Any, Dict, Optional, Type, TypeVar
+from typing import Any, Optional, Type, TypeVar
 
 import pydantic
 import pydantic.errors
@@ -9,7 +9,6 @@ import pydantic.fields
 import pydantic.json
 import pydantic.validators
 from setuptools._vendor.packaging.version import Version  # type: ignore
-from typing_extensions import TypeAlias
 
 from nested_config._types import PathLike
 from nested_config.expand import expand_config
@@ -18,13 +17,6 @@ from nested_config.loaders import load_config
 PathT = TypeVar("PathT", bound=PurePath)
 PydModelT = TypeVar("PydModelT", bound=pydantic.BaseModel)
 PYDANTIC_1 = Version(pydantic.VERSION) < Version("2.0")
-
-
-if PYDANTIC_1:
-    FieldInfo_: TypeAlias = pydantic.fields.ModelField
-else:
-    FieldInfo_: TypeAlias = pydantic.fields.FieldInfo
-ModelFields: TypeAlias = Dict[str, FieldInfo_]
 
 
 def validate_config(
