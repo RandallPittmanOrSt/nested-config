@@ -1,5 +1,5 @@
-"""parsing.py - Functions to parse config files (e.g. TOML) into Pydantic model instances,
-possibly with nested models specified by string paths."""
+"""expand.py - The core functionality of nested-config - expand configuration files
+with paths to other config files into a single config dict."""
 
 import functools
 import inspect
@@ -21,6 +21,38 @@ def expand_config(
     *,
     default_suffix: Optional[str] = None,
 ) -> ConfigDict:
+    """Expand a configuration file into a single configuration dict by loading the
+    configuration file with a loader (according to its file extension) and using the
+    attribute annotations of a class to determine if any string values in the
+    configuration dict should be interpreted as paths and loaded into config dicts to nest
+    inside the parent config dict
+
+    Inputs
+    ------
+    config_path
+        The path to a configuration file to load. Its suffix (e.g. '.toml') will be used
+        as a key to `nested_config.config_dict_loaders` to determine which loader to use.
+    model
+        The class whose attribute annotations will be used to expand the config dict
+        loaded from `config_path`
+    default_suffix
+        The file extension or suffix to assume if a config file's suffix is not in
+        `nested_config.config_dict_loaders`.
+
+    Raises
+    ------
+    FileNotFoundError
+        A string in the config dict (or one of its child config dicts) was determined to
+        be a path to a configuration file but no configuration file exists at that path
+    nested_config.NoLoaderError
+        The suffix of this config file or one of the nested config files is not in
+        `nested_config.config_dict_loaders`
+    nested_config.ConfigLoaderError
+        There was a problem loading the file with the loader (this wraps whatever
+        exception is thrown from the loader)
+    nested_config.ConfigExpansionError
+        A config file contains a field that is not in the model
+    """
     expander = ConfigExpander(default_suffix=default_suffix)
     return expander.expand(config_path, model)
 
@@ -39,8 +71,7 @@ def get_model_annotations(model: type) -> Dict[str, Any]:
 
 
 def get_modelfield_annotation(model: type, field_name: str):
-    """Try to get the field annotation for some type, e.g. a dataclass or Pydantic
-    model
+    """Try to get the field annotation for a model (README.md#model)
 
     Inputs
     ------
@@ -68,14 +99,24 @@ def get_modelfield_annotation(model: type, field_name: str):
 
 
 def is_model(val: Any) -> bool:
+    """Determine if something can be used as a model (see model definition in README.md)"""
     return hasattr(val, "__dict__") and "__annotations__" in val.__dict__
 
 
 class ConfigExpander:
+    """ConfigExpander does all the work of this package. The only state it holds is
+    default_suffix.
+    """
+
     def __init__(self, *, default_suffix: Optional[str] = None):
+        """Create the ConfigExpander, optionally with a default suffix to use to get a
+        loader if a config file has no suffix or its suffix isn't in
+        config_dict_loaders"""
         self.default_suffix = default_suffix
 
     def expand(self, config_path: PathLike, model: type) -> ConfigDict:
+        """Load a config file into a config dict and expand any paths to config files into
+        dictionaries to include in the output config dict"""
         config_path = Path(config_path)
         config_dict = load_config(config_path, self.default_suffix)
         return self._preparse_config_dict(config_dict, model, config_path)

@@ -1,18 +1,17 @@
 [tool.poetry]
 name = "nested-config"
-version = "2.1.0"
+version = "2.1.1"
 description = """\
-Parse configuration files that include paths to other config files into Pydantic model\
- instances. Also support pathlib.PurePath on Pydantic 1.8+.\
+Parse configuration files that include paths to other config files into a single\
+ configuration object\
 """
 authors = ["Randall Pittman <pittmara@oregonstate.edu>"]
 readme = "README.md"
 license = "MIT"
 repository = "https://gitlab.com/osu-nrsg/nested-config"
-keywords = ["pydantic", "config", "configuration files"]
+keywords = ["config", "configuration files"]
 classifiers = [
-    "Development Status :: 4 - Beta",
-    "Framework :: Pydantic",
+    "Development Status :: 5 - Production/Stable",
     "Intended Audience :: Developers",
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3.8",
