@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.1.2] - 2024-04-19
+
+- Fixed problem where `expand_config` didn't work with PEP 563 stringized annotations. Now
+  using `typing.get_type_hints` rather than directly querying `__annotations__`.
+- Added test with `from __future__ import annotations`
+
 ## [2.1.1] - 2024-04-19
 
 - Export ConfigExpansionError in `__init__.py`
@@ -77,7 +83,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Export `TomlParsingError` from rtoml for downstream exception handling (without needing to explicitly
   import rtoml).
 
-[Unreleased]: https://gitlab.com/osu-nrsg/nested-config/-/compare/v2.1.1...master
+[Unreleased]: https://gitlab.com/osu-nrsg/nested-config/-/compare/v2.1.2...master
+[2.1.2]: https://gitlab.com/osu-nrsg/nested-config/-/compare/v2.1.1...v2.1.2
 [2.1.1]: https://gitlab.com/osu-nrsg/nested-config/-/compare/v2.1.0...v2.1.1
 [2.1.0]: https://gitlab.com/osu-nrsg/nested-config/-/compare/v2.0.3...v2.1.0
 [2.0.3]: https://gitlab.com/osu-nrsg/nested-config/-/compare/v2.0.2...v2.0.3
