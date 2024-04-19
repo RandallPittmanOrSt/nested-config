@@ -2,8 +2,8 @@
 name = "nested-config"
 version = "2.1.1"
 description = """\
-Parse configuration files that include paths to other config files into a single\
- configuration object\
+Parse configuration files that include paths to other config files into a single \
+configuration object\
 """
 authors = ["Randall Pittman <pittmara@oregonstate.edu>"]
 readme = "README.md"
