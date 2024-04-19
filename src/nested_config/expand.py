@@ -2,7 +2,6 @@
 with paths to other config files into a single config dict."""
 
 import functools
-import inspect
 import typing
 from pathlib import Path
 from typing import Any, Dict, Optional
@@ -64,10 +63,7 @@ class ConfigExpansionError(RuntimeError):
 @functools.lru_cache
 def get_model_annotations(model: type) -> Dict[str, Any]:
     """Get the aggregated annotations of all members of a model"""
-    annotations: Dict[str, Any] = {}
-    for cls in inspect.getmro(model)[::-1]:
-        annotations.update(cls.__dict__.get("__annotations__", {}))
-    return annotations
+    return typing.get_type_hints(model)
 
 
 def get_modelfield_annotation(model: type, field_name: str):
