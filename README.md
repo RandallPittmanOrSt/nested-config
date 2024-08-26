@@ -1,6 +1,8 @@
 # nested-config <!-- omit in toc -->
 
-[![PyPI package](https://img.shields.io/pypi/v/nested-config.svg)](http://python.org/pypi/nested-config)
+[![PyPI package](https://img.shields.io/pypi/v/nested-config.svg)](http://python.org/pypi/nested-config)&nbsp;&nbsp;
+[GitLab repository](https://gitlab.com/osu-nrsg/nested-config)&nbsp;&nbsp;
+[GitHub mirror](https://github.com/RandallPittmanOrSt/nested-config)
 
 <span style="font-size: larger">If you've ever wanted to have the option of replacing part
  of a configuration file with a path to another configuration file that contains those
