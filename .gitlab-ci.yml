@@ -29,7 +29,7 @@ default:
 
 before_script:
   - uv venv
-  - uv sync
+  - uv sync --all-extras
 
 
 pytest_38_pyd18:
