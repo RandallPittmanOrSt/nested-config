@@ -30,7 +30,8 @@ dependencies = [
 
 [project.urls]
 Repository = "https://gitlab.com/osu-nrsg/nested-config"
-Changes = "https://gitlab.com/osu-nrsg/nested-config/-/blob/master/CHANGELOG.md"
+Issues = "https://gitlab.com/osu-nrsg/nested-config/-/issues"
+Changelog = "https://gitlab.com/osu-nrsg/nested-config/-/blob/master/CHANGELOG.md"
 "GitHub Mirror" = "https://github.com/RandallPittmanOrSt/nested-config"
 
 
