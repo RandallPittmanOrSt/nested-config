@@ -29,17 +29,26 @@ default:
   image: ghcr.io/astral-sh/uv:$UV_VERSION-python3.12-$BASE_LAYER
 
 before_script:
+  - echo "UV_RUN_NS means '$UV_RUN_NS'"
   - uv venv
   - uv sync --all-extras
 
 
-pytest_38_pyd18:
+pytest_38_oldest_pyd18:
   stage: test
   image: ghcr.io/astral-sh/uv:$UV_VERSION-python3.8-$BASE_LAYER
   script:
     # backtrack to all older versions
     - uv pip install typing_extensions==4.6 pydantic==1.8 tomli==2.0.0 pyyaml==5.1
     - $UV_RUN_NS mypy --always-true PYDANTIC_1 ./
+    - $UV_RUN_NS pytest
+
+
+pytest_38_all_latest:
+  stage: test
+  image: ghcr.io/astral-sh/uv:$UV_VERSION-python3.8-$BASE_LAYER
+  script:
+    - $UV_RUN_NS mypy --always-false PYDANTIC_1 ./
     - $UV_RUN_NS pytest
 
 
