@@ -19,6 +19,7 @@
 variables:
   UV_VERSION: 0.5.20
   BASE_LAYER: bookworm-slim
+  UV_RUN_NS: uv run --no-sync
 
 
 stages:
@@ -38,8 +39,8 @@ pytest_38_pyd18:
   script:
     # backtrack to all older versions
     - uv pip install typing_extensions==4.6 pydantic==1.8 tomli==2.0.0 pyyaml==5.1
-    - uv run mypy --always-true PYDANTIC_1 ./
-    - uv run pytest
+    - $UV_RUN_NS mypy --always-true PYDANTIC_1 ./
+    - $UV_RUN_NS pytest
 
 
 pytest_312_pyd18:
@@ -47,8 +48,8 @@ pytest_312_pyd18:
   script:
     # backtrack to older pydantic
     - uv pip install pydantic==1.8
-    - uv run mypy --always-true PYDANTIC_1 ./
-    - uv run pytest
+    - $UV_RUN_NS mypy --always-true PYDANTIC_1 ./
+    - $UV_RUN_NS pytest
 
 
 pytest_312_pyd110:
@@ -56,12 +57,12 @@ pytest_312_pyd110:
   script:
     # backtrack to older pydantic
     - uv pip install pydantic==1.10
-    - uv run mypy --always-true PYDANTIC_1 ./
-    - uv run pytest
+    - $UV_RUN_NS mypy --always-true PYDANTIC_1 ./
+    - $UV_RUN_NS pytest
 
 
 pytest_312_all_latest:
   stage: test
   script:
-    - uv run mypy --always-false PYDANTIC_1 ./
-    - uv run pytest
+    - $UV_RUN_NS mypy --always-false PYDANTIC_1 ./
+    - $UV_RUN_NS pytest
