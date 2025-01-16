@@ -1,6 +1,6 @@
 [project]
 name = "nested-config"
-version = "2.1.3.alpha0"
+version = "2.1.3"
 description = """\
 Parse configuration files that include paths to other config files into a single \
 configuration object\
