@@ -9,7 +9,7 @@ import pydantic.errors
 import pydantic.fields
 import pydantic.json
 import pydantic.validators
-from setuptools._vendor.packaging.version import Version  # type: ignore
+from packaging.version import Version  # type: ignore
 from typing_extensions import Unpack
 
 from nested_config._types import PathLike

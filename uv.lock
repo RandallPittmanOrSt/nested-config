@@ -259,6 +259,7 @@ name = "nested-config"
 version = "2.1.3a0"
 source = { editable = "." }
 dependencies = [
+    { name = "packaging" },
     { name = "pydantic" },
     { name = "single-version" },
     { name = "tomli", marker = "python_full_version < '3.11'" },
@@ -286,6 +287,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
+    { name = "packaging", specifier = ">=24.2" },
     { name = "pydantic", specifier = ">=1.8,<3.0.0" },
     { name = "pydantic", marker = "extra == 'pydantic'", specifier = ">=1.8" },
     { name = "pyyaml", marker = "extra == 'pyyaml'", specifier = ">=5.1.0" },
