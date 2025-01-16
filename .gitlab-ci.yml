@@ -16,50 +16,52 @@
 # This specific template is located at:
 # https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Getting-Started.gitlab-ci.yml
 
+variables:
+  UV_VERSION: 0.5.20
+  BASE_LAYER: bookworm-slim
+
+
 stages:
   - test
 
+default:
+  image: ghcr.io/astral-sh/uv:$UV_VERSION-python3.12-$BASE_LAYER
 
 before_script:
-  - pip install poetry
-  - poetry config virtualenvs.create false
-  - poetry install -E yaml -E pydantic
+  - uv venv
+  - uv sync
 
 
 pytest_38_pyd18:
   stage: test
-  image: python:3.8
+  image: ghcr.io/astral-sh/uv:$UV_VERSION-python3.8-$BASE_LAYER
   script:
     # backtrack to all older versions
-    - pip install typing_extensions==4.6 pydantic==1.8 tomli==2.0.0 pyyaml==5.1
-    - poetry run mypy --always-true PYDANTIC_1 ./
-    - poetry run pytest
+    - uv pip install typing_extensions==4.6 pydantic==1.8 tomli==2.0.0 pyyaml==5.1
+    - uv run mypy --always-true PYDANTIC_1 ./
+    - uv run pytest
 
 
 pytest_312_pyd18:
   stage: test
-  image: python:3.12
   script:
     # backtrack to older pydantic
-    - pip install pydantic==1.8
-    - poetry run mypy --always-true PYDANTIC_1 ./
-    - poetry run pytest
+    - uv pip install pydantic==1.8
+    - uv run mypy --always-true PYDANTIC_1 ./
+    - uv run pytest
 
 
 pytest_312_pyd110:
   stage: test
-  image: python:3.12
   script:
     # backtrack to older pydantic
-    - pip install pydantic==1.10
-    - poetry run mypy --always-true PYDANTIC_1 ./
-    - poetry run pytest
+    - uv pip install pydantic==1.10
+    - uv run mypy --always-true PYDANTIC_1 ./
+    - uv run pytest
 
 
 pytest_312_all_latest:
   stage: test
-  image: python:3.12
   script:
-    - poetry update  # install latest possible versions
-    - poetry run mypy --always-false PYDANTIC_1 ./
-    - poetry run pytest
+    - uv run mypy --always-false PYDANTIC_1 ./
+    - uv run pytest
