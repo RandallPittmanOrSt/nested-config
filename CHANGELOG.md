@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.1.4] - 2025-01-16
+
+- `__init__.py` exports with redundant aliases.
+
 ## [2.1.3] - 2025-01-16
 
 - README updated.
@@ -90,8 +94,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Export `TomlParsingError` from rtoml for downstream exception handling (without needing to explicitly
   import rtoml).
 
-[Unreleased]: https://gitlab.com/osu-nrsg/nested-config/-/compare/v2.1.3...master
-[2.1.3]: https://gitlab.com/osu-nrsg/nested-config/-/compare/v2.1.1...v2.1.3
+[Unreleased]: https://gitlab.com/osu-nrsg/nested-config/-/compare/v2.1.4...master
+[2.1.4]: https://gitlab.com/osu-nrsg/nested-config/-/compare/v2.1.3...v2.1.4
+[2.1.3]: https://gitlab.com/osu-nrsg/nested-config/-/compare/v2.1.2...v2.1.3
 [2.1.2]: https://gitlab.com/osu-nrsg/nested-config/-/compare/v2.1.1...v2.1.2
 [2.1.1]: https://gitlab.com/osu-nrsg/nested-config/-/compare/v2.1.0...v2.1.1
 [2.1.0]: https://gitlab.com/osu-nrsg/nested-config/-/compare/v2.0.3...v2.1.0
