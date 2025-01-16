@@ -5,17 +5,26 @@ nested_config.expand_config().
 
 try:
     # Don't require pydantic
-    from ._pydantic import (
+    from nested_config._pydantic import (
         BaseModel,
         validate_config,
     )
 except ImportError:
     pass
 
-from .expand import ConfigExpansionError, expand_config
-from .loaders import (
+from nested_config.expand import ConfigExpansionError, expand_config
+from nested_config.loaders import (
     ConfigLoaderError,
     NoLoaderError,
     config_dict_loaders,
 )
-from .version import __version__
+from nested_config.version import __version__
+
+__all__ = [
+    "ConfigExpansionError",
+    "expand_config",
+    "ConfigLoaderError",
+    "NoLoaderError",
+    "config_dict_loaders",
+    "__version__",
+]
