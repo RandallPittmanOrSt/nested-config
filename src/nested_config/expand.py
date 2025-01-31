@@ -57,7 +57,8 @@ def expand_config(
 
 
 class ConfigExpansionError(RuntimeError):
-    pass
+    def __init__(self, model: type, field_name: str):
+        super().__init__(f"Model type {model} does not have a field named {field_name}.")
 
 
 @functools.lru_cache
@@ -89,9 +90,7 @@ def get_modelfield_annotation(model: type, field_name: str):
     try:
         return get_model_annotations(model)[field_name]
     except KeyError:
-        raise ConfigExpansionError(
-            f"Model type {model} does not have a field named {field_name}"
-        ) from None
+        raise ConfigExpansionError(model, field_name) from None
 
 
 def is_model(val: Any) -> bool:
