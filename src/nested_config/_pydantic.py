@@ -21,7 +21,7 @@ PydModelT = TypeVar("PydModelT", bound=pydantic.BaseModel)
 PYDANTIC_1 = Version(pydantic.VERSION) < Version("2.0")
 
 
-def api_deprecation(api_name):
+def api_deprecation(api_name) -> None:
     warnings.warn(
         f"{api_name} is deprecated as of nested_config v2.1.0 and will be removed in"
         " v3.0.0",
@@ -89,7 +89,7 @@ def dump_json(model: pydantic.BaseModel) -> str:
         return model.model_dump_json()
 
 
-def patch_pydantic_json_encoders():
+def patch_pydantic_json_encoders() -> None:
     """Add PurePath encoder for JSON in Pydantic < 2.0"""
     if PYDANTIC_1:
         api_deprecation("nested_config.patch_pydantic_json_encoders")
@@ -108,15 +108,15 @@ def _path_validator(v: Any, type: Type[PathT]) -> PathT:
         raise pydantic.errors.PathError from None
 
 
-def pure_path_validator(v: Any):
+def pure_path_validator(v: Any) -> PurePath:
     return _path_validator(v, type=PurePath)
 
 
-def pure_posix_path_validator(v: Any):
+def pure_posix_path_validator(v: Any) -> PurePosixPath:
     return _path_validator(v, type=PurePosixPath)
 
 
-def pure_windows_path_validator(v: Any):
+def pure_windows_path_validator(v: Any) -> PureWindowsPath:
     return _path_validator(v, type=PureWindowsPath)
 
 

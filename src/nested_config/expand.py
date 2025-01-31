@@ -4,7 +4,7 @@ with paths to other config files into a single config dict."""
 import functools
 import typing
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, Union
 
 from nested_config._types import (
     UNION_TYPES,
@@ -119,7 +119,7 @@ class ConfigExpander:
 
     def _preparse_config_dict(
         self, config_dict: ConfigDict, model: type, config_path: Path
-    ):
+    ) -> Dict[str, Any]:
         return {
             key: self._preparse_config_value(
                 value, get_modelfield_annotation(model, key), config_path
@@ -128,8 +128,8 @@ class ConfigExpander:
         }
 
     def _preparse_config_value(
-        self, field_value: str, field_annotation: Any, config_path: Path
-    ):
+        self, field_value: Any, field_annotation: Any, config_path: Path
+    ) -> Any:
         """Check if a model field contains a path to another model and parse it
         accordingly"""
         # If the annotation is optional, get the enclosed annotation
@@ -192,7 +192,7 @@ class ConfigExpander:
         return self.expand(path, model)
 
 
-def _get_optional_ann(annotation):
+def _get_optional_ann(annotation: Any) -> Any:
     """Convert a possibly Optional annotation to its underlying annotation"""
     annotation_origin = typing.get_origin(annotation)
     annotation_args = typing.get_args(annotation)
@@ -201,7 +201,7 @@ def _get_optional_ann(annotation):
     return annotation
 
 
-def _get_list_value_ann(annotation):
+def _get_list_value_ann(annotation: Any) -> Union[Any, None]:
     """Get the internal annotation of a typed list, if any. Otherwise return None."""
     annotation_origin = typing.get_origin(annotation)
     annotation_args = typing.get_args(annotation)
@@ -210,7 +210,7 @@ def _get_list_value_ann(annotation):
     return None
 
 
-def _get_dict_value_ann(annotation):
+def _get_dict_value_ann(annotation: Any) -> Union[Any, None]:
     """Get the internal annotation of a dict's value type, if any. Otherwise return
     None."""
     annotation_origin = typing.get_origin(annotation)
