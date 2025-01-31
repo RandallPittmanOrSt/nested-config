@@ -119,6 +119,8 @@ class ConfigExpander:
     def _preparse_config_dict(
         self, config_dict: ConfigDict, model: type, config_path: Path
     ) -> Dict[str, Any]:
+        """Convert every config_dict value that is a path to a config files into a dict
+        representation of its model."""
         return {
             key: self._preparse_config_value(
                 value, get_modelfield_annotation(model, key), config_path
