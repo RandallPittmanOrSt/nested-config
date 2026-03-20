@@ -17,7 +17,7 @@
 # https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Getting-Started.gitlab-ci.yml
 
 variables:
-  UV_VERSION: 0.5.20
+  UV_VERSION: 0.10.12
   BASE_LAYER: bookworm-slim
   UV_RUN_NS: uv run --no-sync
 
