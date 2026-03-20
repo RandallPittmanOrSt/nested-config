@@ -18,7 +18,7 @@
 
 variables:
   UV_VERSION: 0.10.12
-  BASE_LAYER: bookworm-slim
+  BASE_LAYER: trixie-slim
   UV_RUN_NS: uv run --no-sync
 
 
