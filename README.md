@@ -1,8 +1,9 @@
 # nested-config <!-- omit in toc -->
 
 [![PyPI package](https://img.shields.io/pypi/v/nested-config.svg)](http://python.org/pypi/nested-config)&nbsp;&nbsp;
-[GitLab repository](https://gitlab.com/osu-nrsg/nested-config)&nbsp;&nbsp;
-[GitHub mirror](https://github.com/RandallPittmanOrSt/nested-config)
+[![GitLab repository](https://img.shields.io/badge/gitlab-repo-orange?logo=gitlab)](https://gitlab.com/osu-nrsg/nested-config)&nbsp;&nbsp;
+[![GitHub mirror](https://img.shields.io/badge/github-mirror-blue?logo=github)](https://github.com/RandallPittmanOrSt/nested-config)&nbsp;&nbsp;
+[![pipeline status](https://gitlab.com/osu-nrsg/nested-config/badges/master/pipeline.svg)](https://gitlab.com/osu-nrsg/nested-config/-/commits/master)
 
 <span style="font-size: larger">If you've ever wanted to have the option of replacing part
  of a configuration file with a path to another configuration file that contains those
@@ -238,7 +239,7 @@ The follow table gives info on how to configure the [mypy](https://www.mypy-lang
 on the version of Pydantic you are using.
 
 | Pydantic Version | [mypy config][1]            | mypy cli                    | [Pyright config][2]                         |
-|------------------|-----------------------------|-----------------------------|---------------------------------------------|
+| ---------------- | --------------------------- | --------------------------- | ------------------------------------------- |
 | 2.0+             | `always_false = PYDANTIC_1` | `--always-false PYDANTIC_1` | `defineConstant = { "PYDANTIC_1" = false }` |
 | 1.8-1.10         | `always_true = PYDANTIC_1`  | `--always-true PYDANTIC_1`  | `defineConstant = { "PYDANTIC_1" = true }`  |
 
