@@ -95,7 +95,13 @@ def get_modelfield_annotation(model: type, field_name: str):
 
 def is_model(val: Any) -> bool:
     """Determine if something can be used as a model (see model definition in README.md)"""
-    return hasattr(val, "__dict__") and "__annotations__" in val.__dict__
+    return hasattr(val, "__dict__") and (
+        "__annotations__" in val.__dict__
+        # one of the following works in Python 3.14+...
+        # https://discuss.python.org/t/issue-with-accessing-annotations-as-documented-in-3-14/104844/13
+        or "__annotate_func__" in val.__dict__
+        or "__annotate__" in val.__dict__
+    )
 
 
 class ConfigExpander:

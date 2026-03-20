@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 - pydantic shouldn't be installed by default.
+- Python 3.14 support added.
 
 ## [2.1.4] - 2025-01-16
 

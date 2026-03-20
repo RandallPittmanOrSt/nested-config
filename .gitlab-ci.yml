@@ -25,8 +25,8 @@ variables:
 stages:
   - test
 
-default:
-  image: ghcr.io/astral-sh/uv:$UV_VERSION-python3.12-$BASE_LAYER
+# default:
+#   image: ghcr.io/astral-sh/uv:$UV_VERSION-python3.14-$BASE_LAYER
 
 before_script:
   - echo "UV_RUN_NS means '$UV_RUN_NS'"
@@ -54,6 +54,7 @@ pytest_38_all_latest:
 
 pytest_312_pyd18:
   stage: test
+  image: ghcr.io/astral-sh/uv:$UV_VERSION-python3.12-$BASE_LAYER
   script:
     # backtrack to older pydantic
     - uv pip install pydantic==1.8
@@ -63,6 +64,7 @@ pytest_312_pyd18:
 
 pytest_312_pyd110:
   stage: test
+  image: ghcr.io/astral-sh/uv:$UV_VERSION-python3.12-$BASE_LAYER
   script:
     # backtrack to older pydantic
     - uv pip install pydantic==1.10
@@ -72,6 +74,14 @@ pytest_312_pyd110:
 
 pytest_312_all_latest:
   stage: test
+  image: ghcr.io/astral-sh/uv:$UV_VERSION-python3.12-$BASE_LAYER
+  script:
+    - $UV_RUN_NS mypy --always-false PYDANTIC_1 ./
+    - $UV_RUN_NS pytest
+
+pytest_314_all_latest:
+  stage: test
+  image: ghcr.io/astral-sh/uv:$UV_VERSION-python3.14-$BASE_LAYER
   script:
     - $UV_RUN_NS mypy --always-false PYDANTIC_1 ./
     - $UV_RUN_NS pytest
