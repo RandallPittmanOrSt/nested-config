@@ -25,7 +25,7 @@ stages:
   - test
 
 default:
-  image: ghcr.io/astral-sh/uv:latest
+  image: ghcr.io/astral-sh/uv:debian-slim
 
 before_script:
   - echo "UV_RUN_NS means '$UV_RUN_NS'"
