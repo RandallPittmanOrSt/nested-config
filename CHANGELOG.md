@@ -7,7 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-- pydantic shouldn't be installed by default.
+## [2.1.5] - 2026-03-24
+
+- Pydantic isn't be installed by default.
 - Python 3.14 support added.
 
 ## [2.1.4] - 2025-01-16
@@ -97,7 +99,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Export `TomlParsingError` from rtoml for downstream exception handling (without needing to explicitly
   import rtoml).
 
-[Unreleased]: https://gitlab.com/osu-nrsg/nested-config/-/compare/v2.1.4...master
+[Unreleased]: https://gitlab.com/osu-nrsg/nested-config/-/compare/v2.1.5...master
+[2.1.5]: https://gitlab.com/osu-nrsg/nested-config/-/compare/v2.1.4...v2.1.5
 [2.1.4]: https://gitlab.com/osu-nrsg/nested-config/-/compare/v2.1.3...v2.1.4
 [2.1.3]: https://gitlab.com/osu-nrsg/nested-config/-/compare/v2.1.2...v2.1.3
 [2.1.2]: https://gitlab.com/osu-nrsg/nested-config/-/compare/v2.1.1...v2.1.2
