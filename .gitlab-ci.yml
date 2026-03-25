@@ -17,26 +17,26 @@
 # https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Getting-Started.gitlab-ci.yml
 
 variables:
-  UV_VERSION: 0.10.12
-  BASE_LAYER: trixie-slim
+  PYTHON_VERSION: "3.14"
   UV_RUN_NS: uv run --no-sync
 
 
 stages:
   - test
 
-# default:
-#   image: ghcr.io/astral-sh/uv:$UV_VERSION-python3.14-$BASE_LAYER
+default:
+  image: ghcr.io/astral-sh/uv:latest
 
 before_script:
   - echo "UV_RUN_NS means '$UV_RUN_NS'"
-  - uv venv
+  - uv venv -p $PYTHON_VERSION
   - uv sync --all-extras
 
 
 pytest_38_oldest_pyd18:
   stage: test
-  image: ghcr.io/astral-sh/uv:$UV_VERSION-python3.8-$BASE_LAYER
+  variables:
+    PYTHON_VERSION: "3.8"
   script:
     # backtrack to all older versions
     - uv pip install typing_extensions==4.6 pydantic==1.8 tomli==2.0.0 pyyaml==5.1
@@ -46,7 +46,8 @@ pytest_38_oldest_pyd18:
 
 pytest_38_all_latest:
   stage: test
-  image: ghcr.io/astral-sh/uv:$UV_VERSION-python3.8-$BASE_LAYER
+  variables:
+    PYTHON_VERSION: "3.8"
   script:
     - $UV_RUN_NS mypy --always-false PYDANTIC_1 ./
     - $UV_RUN_NS pytest
@@ -54,7 +55,8 @@ pytest_38_all_latest:
 
 pytest_312_pyd18:
   stage: test
-  image: ghcr.io/astral-sh/uv:$UV_VERSION-python3.12-$BASE_LAYER
+  variables:
+    PYTHON_VERSION: "3.12"
   script:
     # backtrack to older pydantic
     - uv pip install pydantic==1.8
@@ -64,7 +66,8 @@ pytest_312_pyd18:
 
 pytest_312_pyd110:
   stage: test
-  image: ghcr.io/astral-sh/uv:$UV_VERSION-python3.12-$BASE_LAYER
+  variables:
+    PYTHON_VERSION: "3.12"
   script:
     # backtrack to older pydantic
     - uv pip install pydantic==1.10
@@ -74,14 +77,16 @@ pytest_312_pyd110:
 
 pytest_312_all_latest:
   stage: test
-  image: ghcr.io/astral-sh/uv:$UV_VERSION-python3.12-$BASE_LAYER
+  variables:
+    PYTHON_VERSION: "3.12"
   script:
     - $UV_RUN_NS mypy --always-false PYDANTIC_1 ./
     - $UV_RUN_NS pytest
 
 pytest_314_all_latest:
   stage: test
-  image: ghcr.io/astral-sh/uv:$UV_VERSION-python3.14-$BASE_LAYER
+  variables:
+    PYTHON_VERSION: "3.14"
   script:
     - $UV_RUN_NS mypy --always-false PYDANTIC_1 ./
     - $UV_RUN_NS pytest
